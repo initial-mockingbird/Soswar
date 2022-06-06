@@ -5,14 +5,15 @@ from src.DB_Model import Encrypt, User, db
 
 db.create_all()
 
-admin = User(login="admin",password=Encrypt.encrypt("admin"))
-dan   = User(login="dan",password=Encrypt.encrypt("dan"))
-angel = User(login="angel",password=Encrypt.encrypt("angel"))
 
-db.session.add(admin)
-db.session.add(dan)
-db.session.add(angel)
-db.session.commit()
+#admin = User(login="admin",password=Encrypt.encrypt("admin"))
+#dan   = User(login="dan",password=Encrypt.encrypt("dan"))
+#angel = User(login="angel",password=Encrypt.encrypt("angel"))
+
+#db.session.add(admin)
+#db.session.add(dan)
+#db.session.add(angel)
+#db.session.commit()
 
 
 @app.route('/', methods=('GET', 'POST'))

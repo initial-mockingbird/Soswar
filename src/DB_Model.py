@@ -3,6 +3,7 @@ from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
 import hashlib
 from init import app
+
 class Encrypt():
     @staticmethod
     def encrypt(s : str) -> str:
