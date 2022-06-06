@@ -5,18 +5,33 @@
 {% endblock %}
 
 {% block main %}
-<form>
-    <div class="titleBox" style="border-radius: 5px; margin: 5px rgb(56,93,138);">
-        <label for="login">Login:</label>
-        <input type="text" id="login" name="login"><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password"><br>
-        <input type="checkbox" id="changePassword" name="changePassword">
-        <label for="changePassword">Cambiar Password</label>
+<div style="margin-top: 2%; margin-left: 10%; margin-right: 10%">
+    <div class="mainTitleBox">
+        Control de Acceso
     </div>
-    <div style="align-self: center;">
-        <input type="submit" value="Enviar">
-        <input type="submit" value="Vaciar">
-    </div>
-</form>
+    <form action="/login" method="POST">
+        <div class="mainLoginBox">
+            <div class="mainLabelBox">
+                <label for="login" style="float: right;">Login:</label>
+            </div>
+            <div class="mainTextBox">
+                <input type="text" class="mainInput" id="login" name="login">
+            </div>
+            
+            <div class="mainLabelBox">
+                <label for="login" style="float: right;">Password:</label>
+            </div>
+            <div class="mainTextBox">
+                <input type="password" class="mainInput" id="password" name="password"><br>
+            </div>
+            
+            <input type="checkbox" class="mainCheckbox" id="changePassword" name="changePassword">
+            <label for="changePassword">Cambiar Password</label>
+        </div>
+        <div style="align-self: center; text-align: center;">
+            <input type="submit" class="mainSubmit" value="Enviar">
+            <input type="submit" class="mainSubmit" value="Vaciar">
+        </div>
+    </form>
+</div>
 {% endblock %}
