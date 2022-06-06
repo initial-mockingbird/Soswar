@@ -1,0 +1,95 @@
+
+.mainGrid{
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 2fr 8fr;
+    grid-template-areas: 
+        "header header header header header"
+        "menu   main   main   main   main" ;
+    column-gap: 0;
+    row-gap: 0;
+    justify-items: stretch;
+    justify-content: stretch; 
+}
+
+.header{
+    grid-area: header;
+    background-color: rgb(183,222,232);
+    border-bottom: 5px solid rgb(56,93,138);
+}
+
+.headerText{
+    margin-left: 20%;
+    margin-right: 20%;
+    text-align: center;
+    color: rgb(33,89,104);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 1.5em;
+    text-shadow: 1px 1px black;
+    
+}
+
+.menu{
+    grid-area: menu;
+    background-color: rgb(219,238,244);
+    border-right: 5px solid rgb(56,93,138);
+}
+
+.main{
+    grid-area: main;
+    background-color: rgb(235,241,222);
+}
+
+.menuBox{
+    top:0;
+    margin-top: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-top: 0;
+    border-bottom: 5px solid rgb(56,93,138);
+    background-color: rgb(198,217,241);
+    font-size: 1.2em;
+    color: black;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+
+.mainAreaGrid{
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: 
+        "header header header header header"
+        "menu   main   main   main   main" ;
+    column-gap: 0;
+    row-gap: 0;
+    justify-items: stretch;
+    justify-content: stretch;
+}
+
+.titleBox{
+    margin-top: 1 solid rgb(56,93,138);
+    align-self: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: rgb(198,217,241);
+    font-size: 1.2em;
+    color: black;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+
+

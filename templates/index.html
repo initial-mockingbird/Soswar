@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block body %}
+<div class="mainGrid">
+    <div class="header">
+        <h1 class="headerText">SISTEMA AUTOMATIZADO DE APOYO A LA GESTION DE RECOLECCION DE COSECHAS DE CACAO</h1>
+    </div>
+
+    <div class="menu">
+        <h3 class="menuBox">Menu</h3>
+    </div>
+
+    <div class="main">
+        <div>
+            <h2 class="titleBox">Control de acceso</h2>
+                <form>
+                    <div class="titleBox" style="border-radius: 5px; margin: 5px rgb(56,93,138);">
+                        <label for="login">Login:</label>
+                        <input type="text" id="login" name="login"><br>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password"><br>
+                        <input type="checkbox" id="changePassword" name="changePassword">
+                        <label for="changePassword">Cambiar Password</label>
+                    </div>
+                    <div style="align-self: center;">
+                        <input type="submit" value="Enviar">
+                        <input type="submit" value="Vaciar">
+                    </div>
+                </form>
+            
+        </div>
+        
+    </div>
+
+</div>
+{% endblock %}
