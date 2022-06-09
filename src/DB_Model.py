@@ -34,6 +34,7 @@ class Groups(db.Model):
     def __repr__(self) -> str:
         return f'<group: {self.group}>'
 
+
 class Users(db.Model):
     __tablename__ = "users"
     login        = db.Column(db.Text,primary_key=True)
@@ -46,6 +47,7 @@ class Users(db.Model):
     def __repr__(self) -> str:
         return f'<login: {self.login}\npassword: {self.password}\ngroup_user:{self.group_user}\ncosecha_user:{self.cosecha_user}>'
 
+
 class Cosecha(db.Model):
     __tablename__ = "cosecha"
     start_date = db.Column(db.Date,primary_key=True)
@@ -55,7 +57,6 @@ class Cosecha(db.Model):
 
     def __repr__(self) -> str:
         return f'<start_date: {str(self.start_date)}\nend_date: {str(self.end_date)}'
-
 
 
 
