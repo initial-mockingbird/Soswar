@@ -1,0 +1,60 @@
+{% extends 'gridTemplate.html' %}
+
+{% block menu %}
+
+{% endblock %}
+
+{% block main %}
+<div style="margin-top: 2%; margin-left: 10%; margin-right: 10%">
+    <div class="titleBox">
+        Perfiles de Usuario
+    </div>
+
+    <div style="display: flex; justify-content: flex-end;">
+        <form>
+            <button class="iconBox button" type="button">
+                <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
+            </button>
+        </form>
+        
+    </div>
+
+    <div class="genericContainerBox" style="margin-top: 0.5em; overflow: auto;">
+
+
+        <div style="display: flex;margin-right: 20%">
+
+            {% for field in fields %}
+                <div style="width: 100%; display: flex; flex-direction:column; margin-left: 5px;">
+                    <div class="itemBox" style="margin-top: 0.5em; margin-left: 0.5em;text-align: center;">{{field}}</div>
+                    {% for item in coupled %}
+                    <div class="itemBox" style="margin-top: 0.5em; margin-left: 0.5em;">{{ item[field] }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div style="display: flex; flex-direction:column; margin-left: 5px;">
+                    <form style="visibility:hidden;">
+                        <button class="itemBox button" type="button">
+                            <svg  xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
+                        </button>
+                    </form>
+                {% for u in coupled %}
+                    <form>
+                        <button class="itemBox button" type="button" onclick='{{selected=u}}'>
+                            <svg  xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
+                        </button>
+                    </form>
+                    
+                {% endfor %}
+            </div>
+
+        </div>        
+    </div>
+
+    {% if {{selected is not None}} %}
+        <h3>U IS: {{u.login}}</h3>
+    {% endif %}
+
+</div>
+{% endblock %}
