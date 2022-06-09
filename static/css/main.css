@@ -91,5 +91,69 @@
     text-align: center;
 }
 
+/* CSS for login.html */
 
+.mainTitleBox{
+    /*Caja*/
+    align-self: center;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+    background-color: rgb(198,217,241);
+    border: 3px solid rgb(120, 147, 180);   
+    /*Texto*/
+    font-size: 1.2em;
+    color: black;
+    font-family: sans-serif;
+    text-align: center;
+    font-weight: bold;
+}
 
+.mainLoginBox{
+    background-color: rgb(219,238,244);     
+    border: 3px solid rgb(56,93,138);
+    border-radius: 20px;
+    margin: 2.5% 23% 1.5% 23%;
+    padding: 2% 5% 2% 5%;
+    text-align: center;
+}
+
+.mainInput{
+    border: 2px solid rgb(56,93,138);
+    border-radius: 4px;
+    float: left;
+    height: 1.85vw;
+}
+
+.mainLabelBox{
+    width: 29%; 
+    float: left;
+    padding-right: 1%;
+    height: 2vw;
+}
+
+.mainTextBox{
+    width: 70%; 
+    float: left;
+    padding-bottom: 2.5%;
+    height: 2vw;
+    text-align: center;
+    align-items: center;
+}
+
+.mainCheckbox{
+    width: 1vw;
+    height: 1vw;
+    border: 3px solid rgb(56,93,138);
+}
+
+.mainSubmit{
+    background-color: rgb(56,93,138);
+    border: none;
+    color: white;
+    font-size: 1vw;
+    padding: 1vw 2vw;
+    font-weight: bold;
+    margin: 0.5vw;
+    cursor: pointer;
+    border-radius: 0.5vw;
+}
