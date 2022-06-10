@@ -1,7 +1,7 @@
 {% extends 'gridTemplate.html' %}
 
 {% block menu %}
-
+<h3 class="menuBox" style="border: 1px solid rgb(56,93,138);text-align: left;padding-left: 1em;font-size: 1em;">Perfiles de usuario</h3>
 {% endblock %}
 
 {% block main %}
@@ -10,14 +10,21 @@
         Perfiles de Usuario
     </div>
 
-    <div style="display: flex; justify-content: flex-end;">
-        <form>
+    <form style="display: flex; justify-content: flex-end;gap:10px">
+
+            <input class="iconBox" type="text" minlength="10em" maxlength="10em" style="width:20em; background-color: white;">
+
+            <button class="iconBox button" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"><path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/></svg>
+            </button>
+
             <button class="iconBox button" type="button">
                 <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
             </button>
-        </form>
+
+            
         
-    </div>
+    </form>
 
     <div class="genericContainerBox" style="margin-top: 0.5em; overflow: auto;">
 
@@ -33,21 +40,7 @@
                 </div>
             {% endfor %}
 
-            <div style="display: flex; flex-direction:column; margin-left: 5px;">
-                    <form style="visibility:hidden;">
-                        <button class="itemBox button" type="button">
-                            <svg  xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
-                        </button>
-                    </form>
-                {% for u in coupled %}
-                    <form>
-                        <button class="itemBox button" type="button" >
-                            <svg  xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
-                        </button>
-                    </form>
-                    
-                {% endfor %}
-            </div>
+
 
         </div>        
     </div>
