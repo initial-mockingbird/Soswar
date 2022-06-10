@@ -1,35 +1,122 @@
-from typing import List
+from __future__ import annotations
+from typing import Any, Callable, Dict, List, Optional, Union
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
-from src.DB_Model import Cosecha, Encrypt, Users, db, Groups, group_user
+from src.DB_Model import Cosecha, Encrypt, Users, Groups, group_user
 from init import app
-from src.DB_Model import Users, db
+from pymaybe import maybe
+from datetime import date, MINYEAR, MAXYEAR
 
 
-class AdminAPI():
+class AdminAPI():    
+
+    __db : Optional[SQLAlchemy] = None
+    
+    @staticmethod
+    def isInit() -> bool:
+        return AdminAPI.__db is not None 
+    
+
+    @staticmethod 
+    def initAPI(db : Optional[SQLAlchemy] = None) -> None:
+        """ Static access method. """
+        if AdminAPI.__db == None:
+            if (db is None):
+                raise ValueError("db must be provided in order to create an Admin API")
+            AdminAPI.__db = db
 
     @staticmethod
-    def addUser(user : Users):
+    def addGroup(group : Groups) -> None:
+        assert(AdminAPI.isInit())
+        if (not Groups.query.filter_by(group=group).first()):
+            AdminAPI.__db.session.add(group)
+            AdminAPI.__db.session.commit()
+    
+    @staticmethod
+    def addUser(user : Users) -> None:
+        assert(AdminAPI.isInit())
         if (not Users.query.filter_by(login=user.login).first()):
-            db.session.add(user)
-            db.session.commit()
+            AdminAPI.__db.session.add(user)
+            AdminAPI.__db.session.commit()
 
     @staticmethod
-    def cosechas():
-        return Cosecha.all()
+    def addCosecha(cosecha : Cosecha) -> None:
+        assert(AdminAPI.isInit())
+        if (not Cosecha.get(cosecha)):
+            AdminAPI.__db.session.add(cosecha)
+            AdminAPI.__db.session.commit()
 
     @staticmethod
-    def lookupUser(login : str):
+    def deleteUser(user : Union[str,Users]) -> None:
+        assert(AdminAPI.isInit())
+        if (isinstance(user,str)):
+            user = Users.query.filter_by(login=user).first()
+        
+        maybe(user).delete()
+
+    @staticmethod
+    def deleteGroup(group : Groups) -> None:
+        assert(AdminAPI.isInit())
+        group.delete()
+
+    @staticmethod
+    def addGroupToUser(group : Union[str,Groups], user : Union[str,Users]) -> None:
+        assert(AdminAPI.isInit())
+
+        if (isinstance(group,str)):
+            group = Users.query.filter_by(group=group).first()
+
+        if (isinstance(user,str)):
+            user = Users.query.filter_by(login=user).first()
+
+        if (group is not None):
+            maybe(user).group_user.append(group)
+
+    @staticmethod
+    def addCosechaToUser(cosecha : Cosecha, user : Union[str,Users]) -> None:
+        assert(AdminAPI.isInit())
+
+        if (isinstance(user,str)):
+            user = Users.query.filter_by(login=user).first()
+
+        maybe(user).cosecha_user.append(cosecha)
+    
+    @staticmethod
+    def deleteCosecha(cosecha : Cosecha) -> None:
+        assert(AdminAPI.isInit())
+        maybe(Cosecha).query.get(cosecha).delete()
+
+    @staticmethod
+    def cosechasInRange(begin : Optional[date] = None,end : Optional[date] = None):
+        assert(AdminAPI.isInit())
+        if (begin is None):
+            begin = date(MINYEAR,1,1)
+        if (end is None):
+            end = date(MAXYEAR,12,31)
+
+        return Cosecha.query.filter(Cosecha.start_date >= begin and Cosecha.end_date <= end).all() 
+
+    @staticmethod
+    def cosechas(u : Union[str,Users,None] = None) -> List[Cosecha]:
+        assert(AdminAPI.isInit())
+        if (u is None):
+            return Cosecha.query.all()
+        if (isinstance(u,str)):
+            return maybe(Users).query.filter_by(login=u).first().cosecha_user.or_else([])
+        else:
+            return u.cosecha_user
+
+    @staticmethod
+    def lookupUser(login : str) -> Optional[Users]:
+        assert(AdminAPI.isInit())
         return Users.query.filter_by(login=login).first()
     
-    @staticmethod
-    def deleteUser(login : str):
-        Users.query.filter_by(login=login).first().delete()
     
 
     @staticmethod
-    def userPublicFields():
+    def userPublicFields() -> Dict[str,type]:
+        assert(AdminAPI.isInit())
         fields = {}
         fields['login']   = str
         fields['name']    = str
@@ -39,8 +126,8 @@ class AdminAPI():
 
     
     @staticmethod
-    def userPublicInfo(login = None):
-        
+    def userPublicInfo(login : Optional[str] = None) -> Union[Dict[str,Any],List[Dict[str,Any]]]:
+        assert(AdminAPI.isInit())
         if (login is not None):
             ret  = {}
             user = Users.query.filter_by(login=login).first()

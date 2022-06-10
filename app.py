@@ -1,5 +1,6 @@
 
 from flask import render_template,request, redirect
+from src.PORM import AdminAPI
 from init import app
 from src.DB_Model import Users, db, Encrypt, Groups, Cosecha
 from src.login import login
@@ -8,7 +9,7 @@ from datetime import date
 
 
 db.create_all()
-
+AdminAPI.initAPI(db)
 '''
 admin_user = Users(login="admin_user",password=Encrypt.encrypt("admin_user"),name="admin name",surname="admin surname")
 dan   = Users(login="dan",password=Encrypt.encrypt("dan"), name="Daniel", surname="Pinto")
@@ -43,13 +44,6 @@ def index():
     if (user is not None):
         return redirect('/control')
     return render_template('index.html')
-
-
-
-
-
-
-
 
 
 if __name__=="__main__":
