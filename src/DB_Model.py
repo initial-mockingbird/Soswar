@@ -15,6 +15,12 @@ group_user = ActiveApp.getDB().Table("group_user",
     ActiveApp.getDB().Column('group',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('groups.group'),primary_key=True)
     )
 
+productor_user = ActiveApp.getDB().Table("productor_user",
+    ActiveApp.getDB().Model.metadata,
+    ActiveApp.getDB().Column('login',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('users.login'),primary_key=True),
+    ActiveApp.getDB().Column('ID',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('productor.ID'),primary_key=True)
+    )
+
 cosecha_user = ActiveApp.getDB().Table("cosecha_user",
     ActiveApp.getDB().Model.metadata,
     ActiveApp.getDB().Column('login',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('users.login'),primary_key=True),
@@ -36,12 +42,27 @@ class Users(ActiveApp.getDB().Model):
     login        = ActiveApp.getDB().Column(ActiveApp.getDB().Text,primary_key=True)
     name         = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
     surname      = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
-    password     = ActiveApp.getDB().Column(ActiveApp.getDB().Text)
+    password     = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    CI           = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    localPhone   = ActiveApp.getDB().Column(ActiveApp.getDB().Text)
+    cellPhone    = ActiveApp.getDB().Column(ActiveApp.getDB().Text)
+    dir1         = ActiveApp.getDB().Column(ActiveApp.getDB().Text)
+    dir2         = ActiveApp.getDB().Column(ActiveApp.getDB().Text)
     group_user   = ActiveApp.getDB().relationship("Groups",secondary=group_user,lazy="subquery",back_populates="group_user")
     cosecha_user = ActiveApp.getDB().relationship("Cosecha",secondary=cosecha_user,lazy="subquery",back_populates="cosecha_user")
-
+    productor_user = ActiveApp.getDB().relationship("Productor",secondary=productor_user,lazy="subquery",back_populates="productor_user")
     def __repr__(self) -> str:
         return f'<login: {self.login}\npassword: {self.password}\ngroup_user:{self.group_user}\ncosecha_user:{self.cosecha_user}>'
+
+
+class Productor(ActiveApp.getDB().Model):
+    __tablename__ = "productor"
+    ID          = ActiveApp.getDB().Column(ActiveApp.getDB().Integer,primary_key=True)
+    description = ActiveApp.getDB().Column(ActiveApp.getDB().Text)
+    dir1         = ActiveApp.getDB().Column(ActiveApp.getDB().Text)
+    dir2         = ActiveApp.getDB().Column(ActiveApp.getDB().Text)
+    productor_user = ActiveApp.getDB().relationship("Users",secondary=productor_user,lazy="subquery",back_populates="productor_user")
+
 
 
 class Cosecha(ActiveApp.getDB().Model):

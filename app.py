@@ -11,9 +11,9 @@ from src.accessControl import accessControl
 from datetime import date 
 
 
-admin_user = Users(login="admin_user",password=Encrypt.encrypt("admin_user"),name="admin name",surname="admin surname")
-dan   = Users(login="dan",password=Encrypt.encrypt("dan"), name="Daniel", surname="Pinto")
-angel = Users(login="angel",password=Encrypt.encrypt("angel"), name="Angel", surname="Garces")
+admin_user = Users(login="admin_user",password=Encrypt.encrypt("admin_user"),name="admin name",surname="admin surname",CI="xx.xxx.xxx")
+dan   = Users(login="dan",password=Encrypt.encrypt("dan"), name="Daniel", surname="Pinto",CI="yy.yyy.yyy")
+angel = Users(login="angel",password=Encrypt.encrypt("angel"), name="Angel", surname="Garces",CI="zz.zzz.zzz")
 
 admin = Groups(group="admin")
 analist = Groups(group="analist")
