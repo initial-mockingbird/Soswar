@@ -76,5 +76,4 @@ class Cosecha(ActiveApp.getDB().Model):
         return f'<start_date: {str(self.start_date)}\nend_date: {str(self.end_date)}'
 
 
-
 ActiveApp.getDB().create_all()

@@ -7,6 +7,38 @@ from src.DB_Model import Cosecha, Encrypt, Users, Groups, group_user
 from init import ActiveApp
 from pymaybe import maybe
 from datetime import date, MINYEAR, MAXYEAR
+import re
+
+
+class User():
+    @staticmethod
+    def addUser(user : Users) -> bool:
+        if (not Users.query.filter_by(login=user.login).first()):
+            ActiveApp.getDB().session.add(user)
+            ActiveApp.getDB().session.commit()
+            return True
+        
+        return False
+
+    @staticmethod
+    def deleteUser(user : Union[str,Users]) -> None:
+        if (isinstance(user,str)):
+            Users.query.filter_by(login=user).delete()
+        else:
+            maybe(user).delete()
+        ActiveApp.getDB().session.commit()
+    
+    @staticmethod
+    def lookupUser(login : str) -> Optional[Users]:
+        return Users.query.filter_by(login=login).first()
+
+    @staticmethod
+    def incrementalRegexLookup(regex : str) -> List[Users]:
+        return [ u for u in Users.query.all() if re.match(regex.strip(),u.login) ]
+
+    @staticmethod
+    def incrementalSearch(initPart : str) -> List[Users]:
+        return User.incrementalRegexLookup(f"{initPart.strip()}(.)*")
 
 
 class AdminAPI():    

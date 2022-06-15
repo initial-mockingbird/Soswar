@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/adduser.css')}}">
+{% endblock %}
+
+
+{% block body %}
+    {% include 'addUser.html' %}
+{% endblock %}

@@ -1,0 +1,47 @@
+
+.label{
+    background-color: white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 0.1em;
+    padding-right: 0.3em;
+    padding-top: 0.2em;
+    padding-bottom: 0.5em;
+    border-bottom: 1em;
+    margin-bottom: 1em;
+
+}
+
+.field{
+    margin-top: 0.5em;
+    border-bottom: 1.5em;
+    border-radius: 5px;
+    border-top-left-radius: 0;
+    width: 100%;
+
+}
+
+.titleBox{
+    border: 1px solid rgb(56,93,138);
+    align-self: center;
+    background-color: rgb(198,217,241);
+    font-size: 1.2em;
+    color: black;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 1px 0px black;
+    padding-top: 0.3em ;
+    padding-bottom: 0.3em ;
+}
+
+
+.genericContainerBox{
+    border: 3px solid rgb(56,93,138);
+    border-radius: 5px;
+    padding: 0.5em;
+    padding-left: 30%;
+    padding-right: 30%;
+    background-color: rgb(183,222,232);
+}
+

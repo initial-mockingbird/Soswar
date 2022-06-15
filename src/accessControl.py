@@ -7,6 +7,7 @@ from src.DB_Model import Encrypt, Users, Groups, group_user
 from src.validators import check_privileges
 from src.PORM import AdminAPI
 
+
 accessControl= Blueprint('accessControl', __name__,template_folder='templates',static_folder='static')
 
 @accessControl.route('/control',  methods=('GET', 'POST'))
@@ -18,6 +19,12 @@ def access_control():
     print(f"\n\n\nFIELDS:{fields.keys()}\n\n\n")
     return render_template('accessControl.html',coupled=coupled, fields = fields.keys(), selected=None)
 
+
+
+@accessControl.route('/addUser',  methods=('GET', 'POST'))
+@check_privileges(['admin'])
+def add_user():
+    return render_template('addUserT.html')
 
 @accessControl.route('/update',  methods=('GET', 'POST'))
 def addRandomUsers():
