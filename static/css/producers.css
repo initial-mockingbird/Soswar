@@ -1,0 +1,70 @@
+.tableContainerDetails{
+    /* Horizontal scroll */
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* color an border */
+    margin: 2% 0%;
+    background-color: rgb(219,238,244);     
+    border: 0.2vw solid rgb(56,93,138);
+    border-radius: 20px;
+    padding: 0% 2% 1% 2%;
+}
+
+.rowContainerDetails{
+    float: top;
+    margin: 0.50% 0%;
+}
+
+.productInput{
+    border: 0.2vw solid rgb(56,93,138);
+    border-radius: 4px;
+    height: 1.85vw;
+    padding: 0% 0%;
+    margin: 0% 0%;
+    font-size: 18px;
+    background-color: white;
+}
+
+.tittleDetails{
+    font-weight: bold;
+    margin: 0% 0.5vw 0% 0%; 
+    text-align:center; 
+    display: inline-block;
+}
+
+.iconBox{
+    background-color: rgb(33,89,104);
+    margin-top: 2em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;   
+}
+
+.iconBoxEdit{
+    background-color: rgb(33,89,104);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+}
+
+.tableContainerProductors{
+    float: right;
+    width: 24vw;
+    /* Horizontal scroll */
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* color an border */
+    margin: 2% 0%;
+    background-color: rgb(219,238,244);     
+    border: 0.2vw solid rgb(56,93,138);
+    border-radius: 20px;
+    padding: 0% 2% 1% 2%;
+}

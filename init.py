@@ -15,10 +15,10 @@ class ActiveApp:
 
         # Different paths for each OS
         if platform == "linux" or platform == "linux2":
-            ActiveApp.__fp = f'{pathlib.Path().resolve()}\\tmp\\prod.db'
-        else:
             ActiveApp.__fp = f'{pathlib.Path().resolve()}/tmp/prod.db'
-            
+        else:
+            ActiveApp.__fp = f'{pathlib.Path().resolve()}\\tmp\\prod.db'
+        
         ActiveApp.__app = Flask(__name__)
         ActiveApp.__app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{ActiveApp.__fp}'
         ActiveApp.__app.config['SECRET_KEY'] = '123456'
@@ -30,7 +30,12 @@ class ActiveApp:
         if (ActiveApp.__app is not None):
             raise Exception("App already running")
         
-        ActiveApp.__fp = f'{pathlib.Path().resolve()}\\tmp\\test.db'
+        # Different paths for each OS
+        if platform == "linux" or platform == "linux2":
+            ActiveApp.__fp = f'{pathlib.Path().resolve()}\\tmp\\prod.db'
+        else:
+            ActiveApp.__fp = f'{pathlib.Path().resolve()}/tmp/prod.db'
+        
         ActiveApp.__app = Flask(__name__)
         ActiveApp.__app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{ActiveApp.__fp}'
         ActiveApp.__app.config['SECRET_KEY'] = '123456'

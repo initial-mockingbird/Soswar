@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    {%set cssStyle = 'static'%}
+    <link rel="stylesheet" href={{url_for(cssStyle,filename=cssFile)}}>
+{% endblock %}
+
+{% block body %}
+    {% include htmlFile %}
+{% endblock %}

@@ -10,7 +10,7 @@
 
 {% block main %}
 <div style="margin: 2% 10% 0% 10%; clear: left;">
-    <div class="mainTitleBox"> Datos personales del productor </div>
+    <div class="mainTitleBox"> Tipos de productores </div>
 
     <form style="display: flex; justify-content: flex-end;gap:10px">
         <input class="iconBox" type="text" minlength="10em" maxlength="10em" style="width:20em; background-color: white;">
@@ -24,7 +24,7 @@
         </button> 
     </form>
 
-    <div class="tableContainerDetails">
+    <div class="tableContainerProductors">
         <div class="rowContainerDetails">
             {% for i in range(columnName|length) %}
             <div class="tittleDetails" style="width: {{columnWidth[i]}}px">
@@ -33,37 +33,20 @@
             {% endfor %}
         </div>
 
-        {% for producer in producersList%}
+        
+        {% for producer in typesOfProducers%}
         <form action="/producers" method="POST" class="rowContainerDetails">
             {% for i in range(columnId|length) %}
-
-                {% if i==5 %}
-                    <select
-                        class="productInput" 
-                        style="width: {{columnWidth[i]}}px; height:2.2vw;" 
-                        id={{ columnId[i] }}  
-                        name={{ columnId[i] }} 
-                    >
-                        <option value = "{{producer[i]}}" selected>{{producer[i]}}</option>
-                        {% for type in typesOfProducers %}
-                            {% if type[1]!=producer[i] %}
-                                <option value = "{{type[1]}}">{{type[1]}}</option>
-                            {% endif %}
-                        {% endfor %}
-                     </select>
-                {% else %}
-                    <input  type="text" 
-                        class="productInput" 
-                        style="width: {{columnWidth[i]}}px" 
-                        id={{ columnId[i] }}  
-                        name={{ columnId[i] }} 
-                        value={{ producer[i] }}
-                    >
-                {% endif %}
-            
+                <input  type="text" 
+                    class="productInput" 
+                    style="width: {{columnWidth[i]}}px" 
+                    id={{ columnId[i] }}  
+                    name={{ columnId[i] }} 
+                    value={{ producer[i] }}
+                >
             {% endfor %}
-            <input id="oldCI" name="oldCI" value={{ producer[2] }} style="display: none;" >
-            
+            <input id="oldDescription" name="oldDescription" value={{ producer[1] }} style="display: none;" >
+                    
             <button class="iconBoxEdit" type="submit" name="action" value="Editar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="18.5" viewBox="0 0 980.000000 980.000000" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd">
                     <g transform="translate(0.000000,980.000000) scale(0.100000,-0.100000)" fill="white" stroke="none">

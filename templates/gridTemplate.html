@@ -1,19 +1,24 @@
 <div class="mainGrid">
-    <div class="header">
-        <h1 class="headerText">SISTEMA AUTOMATIZADO DE APOYO A LA GESTION DE RECOLECCION DE COSECHAS DE CACAO</h1>
+    <div style="width: 100%; height: 100%;">
+        <div  class="header">
+            SISTEMA AUTOMATIZADO DE APOYO A LA <br>GESTION DE RECOLECCION DE COSECHAS DE CACAO
+        </div>
+    
+        <div class="body">
+            <div class="menu">
+                <h1 class="menuTittle">Menu</h1>
+                {% block menu %}
+
+                {% endblock %}
+            </div>
+
+            <div class="main">
+                {% block main %}
+
+                {% endblock %}
+            </div>
+        </div>
+        
     </div>
-
-    <div class="menu">
-        <h3 class="menuBox">Menu</h3>
-        {% block menu %}
-
-        {% endblock %}
-    </div>
-
-    <div class="main">
-        {% block main %}
-
-        {% endblock %}
-    </div>
-
+        
 </div>

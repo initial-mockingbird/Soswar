@@ -1,9 +1,10 @@
 from __future__ import annotations
+from dataclasses import field
 from typing import Any, Callable, Dict, List, Optional, Union
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
-from src.DB_Model import Cosecha, Encrypt, Users, Groups, group_user
+from src.DB_Model import Cosecha, Encrypt, Persona, Users, Groups, group_user, TipoProductor
 from init import ActiveApp
 from pymaybe import maybe
 from datetime import date, MINYEAR, MAXYEAR
@@ -96,7 +97,6 @@ class AdminAPI():
     def lookupGroup(group : str) -> Optional[Groups]:
         return Groups.query.filter_by(group=group).first()
 
-
     @staticmethod
     def getAllUsers() -> List[Users]:
         return Users.query.all()
@@ -111,7 +111,6 @@ class AdminAPI():
         #return {'login':str,'name':str,'surname':str,'group_user':Groups,'cosecha_user':Cosecha}
         return fields
 
-    
     @staticmethod
     def userPublicInfo(login : Optional[str] = None) -> Union[Dict[str,Any],List[Dict[str,Any]]]:
         if (login is not None):
@@ -130,3 +129,52 @@ class AdminAPI():
 
         
         return ret
+
+    @staticmethod
+    def personaPublicFields() -> List[str]:
+        return [ 'name','surname','CI','localPhone','cellPhone','persona_productor','dir1','dir2' ]
+
+    @staticmethod
+    def typeOfProducerPublicFields() -> List[str]:
+        return [ 'ID','description' ]
+
+    @staticmethod
+    def getAllPersonas(u : Union[str,Persona,None] = None) -> List[Dict[str,Any]]:
+        personas = Persona.query.all()
+        fields = AdminAPI.personaPublicFields()
+        ans = [ [ getattr(p,field) for field in fields ] for p in personas ]
+        for p in ans:
+            if len(p[5])>0:
+                p[5] = p[5][0].description 
+        return ans 
+    
+    @staticmethod
+    def getAllTypeOfProducers() -> List[TipoProductor]:
+        productores = TipoProductor.query.all()
+        fields  = AdminAPI.typeOfProducerPublicFields()
+        return [ [ getattr(p,field) for field in fields ] for p in productores ]
+    
+    @staticmethod
+    def getTypeOfProducers( des:str ) -> TipoProductor:
+        return TipoProductor.query.filter_by(description=des).first()
+
+    @staticmethod
+    def updPerson( ciPersona : str, d : Dict[str,str]) -> None:
+        p = Persona.query.filter_by(CI=ciPersona).first()
+        fields = AdminAPI.personaPublicFields()
+
+        for field in fields:
+            if field != 'persona_productor':
+                setattr( p, field, d[field] )
+            else:
+                valor = [AdminAPI.getTypeOfProducers(d['persona_productor'])]
+                setattr( p, field, valor )
+
+        ActiveApp.getDB().session.add(p)
+        ActiveApp.getDB().session.commit()
+
+    @staticmethod
+    def deletePersona(ciPersona : str) -> None:
+        p = Persona.query.filter_by(CI=ciPersona).delete()
+        ActiveApp.getDB().session.commit()
+
