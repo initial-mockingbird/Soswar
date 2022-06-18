@@ -189,15 +189,20 @@ class AdminAPI():
 
     @staticmethod
     def personaPublicFields() -> List[str]:
-        return [ 'name','surname','CI','localPhone','cellPhone','persona_productor','dir1','dir2' ]
+        return [ 'CI','surname','name','localPhone','cellPhone','persona_productor','dir1','dir2' ]
 
     @staticmethod
     def typeOfProducerPublicFields() -> List[str]:
         return [ 'ID','description' ]
 
     @staticmethod
-    def getAllPersonas(u : Union[str,Persona,None] = None) -> List[Dict[str,Any]]:
-        personas = Persona.query.all()
+    def getAllPersonas( filterCI:str=None ) -> List[Dict[str,Any]]:
+        if filterCI == None:
+            personas = Persona.query.all()
+        else:
+            personas = Persona.query.filter_by(CI=filterCI)
+        
+        # Transform list of persons to list of list for a better speed acces
         fields = AdminAPI.personaPublicFields()
         ans = [ [ getattr(p,field) for field in fields ] for p in personas ]
         for p in ans:
@@ -206,8 +211,11 @@ class AdminAPI():
         return ans 
     
     @staticmethod
-    def getAllTypeOfProducers() -> List[TipoProductor]:
-        productores = TipoProductor.query.all()
+    def getAllTypeOfProducers( filterDesctiption:str=None ) -> List[TipoProductor]:
+        if filterDesctiption==None:
+            productores = TipoProductor.query.all()
+        else: 
+            productores = TipoProductor.query.filter_by(description=filterDesctiption)
         fields  = AdminAPI.typeOfProducerPublicFields()
         return [ [ getattr(p,field) for field in fields ] for p in productores ]
     

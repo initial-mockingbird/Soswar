@@ -68,7 +68,7 @@ app.register_blueprint(producers)
 @app.route('/', methods=('GET', 'POST'))
 def index():
 
-    return make_response(redirect('/typeOfProducers'))
+    return make_response(redirect('/dataProducers'))
     columnName = [ 'Cedula:', 'Apellidos:', 'Nombres:', 'Telefono local:', 'Celular:', 'Tipo-productor:', 'Direccion 1:', 'Direccion 2:' ]
     columnId = AdminAPI.personaPublicFields()
     columnWidth = [ 120, 150, 150, 150, 150, 200, 200, 200 ]

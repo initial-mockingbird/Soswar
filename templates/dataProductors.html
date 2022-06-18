@@ -10,21 +10,26 @@
 
 {% block main %}
 <div style="margin: 2% 10% 0% 10%; clear: left;">
-    <div class="mainTitleBox"> Datos personales del productor </div>
+    <div class="mainTitleBox"> Datos de productores </div>
 
-    <form style="display: flex; justify-content: flex-end;gap:10px">
-        <input class="iconBox" type="text" minlength="10em" maxlength="10em" style="width:20em; background-color: white;">
+    <div style="width: 100%; margin-top: 2em;">
+        <div class="redMessage"> {{redMessage}} </div> 
+        <div class="greenMessage"> {{greenMessage}} </div> 
 
-        <button class="iconBox button" type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"><path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/></svg>
-        </button>
+        <form action="/dataProducers" method="GET" style="display: flex; float: right;">
+            <input class="iconBox" type="text" id="filterByCI" name="filterByCI" placeholder="Buscar por cedula" style="width:20em; background-color: white;">
 
-        <button class="iconBox button" type="button">
-            <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
-        </button> 
-    </form>
+            <button class="iconBox button" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"><path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/></svg>
+            </button>
 
-    <div class="tableContainerDetails">
+            <button class="iconBox button" type="button">
+                <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
+            </button> 
+        </form >
+    </div>
+
+    <div class="tableContainerDetails" style="clear: both;">
         <div class="rowContainerDetails">
             {% for i in range(columnName|length) %}
             <div class="tittleDetails" style="width: {{columnWidth[i]}}px">
@@ -62,7 +67,7 @@
                 {% endif %}
             
             {% endfor %}
-            <input id="oldCI" name="oldCI" value={{ producer[2] }} style="display: none;" >
+            <input id="oldCI" name="oldCI" value={{ producer[0] }} style="display: none;" >
             
             <button class="iconBoxEdit" type="submit" name="action" value="Editar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="18.5" viewBox="0 0 980.000000 980.000000" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd">
