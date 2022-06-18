@@ -34,7 +34,7 @@
         </div>
 
         {% for producer in producersList%}
-        <form action="/producers" method="POST" class="rowContainerDetails">
+        <form action="/updateProducers" method="POST" class="rowContainerDetails">
             {% for i in range(columnId|length) %}
 
                 {% if i==5 %}

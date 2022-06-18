@@ -7,6 +7,8 @@ from src.PORM import AdminAPI
 
 producers= Blueprint('producers', __name__,template_folder='templates',static_folder='static')
 
+# Routes for the interface with their respective initializations
+
 @producers.route('/dataProducers',methods=('GET', 'POST'))
 def data_producers():
     columnName = [ 'Cedula:', 'Apellidos:', 'Nombres:', 'Telefono local:', 'Celular:', 'Tipo-productor:', 'Direccion 1:', 'Direccion 2:' ]
@@ -26,9 +28,10 @@ def type_of_data_producers():
 
     return render_template('mainArea.html', htmlFile='producers.html', cssFile='css/producers.css', columnName=columnName, columnWidth=columnWidth, columnId=columnId, typesOfProducers=typesOfProducers)
 
+# Routes in charge of the backend of the aplications
 
-@producers.route('/producers',methods=('GET', 'POST'))
-def process_producers():
+@producers.route('/updateProducers',methods=('GET', 'POST'))
+def process_data_producers():
     if request.method != 'POST':
         return
     
@@ -38,3 +41,16 @@ def process_producers():
         AdminAPI.deletePersona( request.form['oldCI'] )
 
     return make_response(redirect('/dataProducers'))
+
+@producers.route('/updateTypeOfProducer',methods=('GET', 'POST'))
+def process_type_of_producers():
+    if request.method != 'POST':
+        return
+    
+    if request.form['action'] == 'Editar':
+        AdminAPI.updTypeOfProducer( request.form['oldDescription'], request.form )
+    else:
+        AdminAPI.deleteTypeOfProducer( request.form['oldDescription'] )
+
+    return make_response(redirect('/typeOfProducers'))
+

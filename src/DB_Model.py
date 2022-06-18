@@ -72,6 +72,9 @@ class TipoProductor(ActiveApp.getDB().Model):
     description       = ActiveApp.getDB().Column(ActiveApp.getDB().Text,primary_key=True)
     ID                = ActiveApp.getDB().Column(ActiveApp.getDB().Integer, unique=True)
     persona_productor = ActiveApp.getDB().relationship("Persona",secondary=productor,lazy="subquery",back_populates="persona_productor")
+
+    def __repr__(self) -> str:
+        return f'<description: {self.description}\nID: {self.ID}\npersona_productor:{self.persona_productor}>\n'
     
 
 class Cosecha(ActiveApp.getDB().Model):

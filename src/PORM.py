@@ -5,13 +5,14 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
 from src.DB_Model import Cosecha, Encrypt, Persona, Users, Groups, group_user, TipoProductor
+from src.DB_Model import productor
 from init import ActiveApp
 from pymaybe import maybe
 from datetime import date, MINYEAR, MAXYEAR
 
-
 class AdminAPI():    
     
+    # Add functions
     @staticmethod
     def addGroup(group : Groups) -> None:
         if (not Groups.query.filter_by(group=group.group).first()):
@@ -31,6 +32,38 @@ class AdminAPI():
             ActiveApp.getDB().session.commit()
 
     @staticmethod
+    def addPerson( d:Dict[str,str], ciPersona:str="" ) -> None:
+        if ciPersona!="": 
+            p = Persona.query.filter_by(CI=ciPersona).first()
+        else:
+            p = Persona()
+        fields = AdminAPI.personaPublicFields()
+
+        for field in fields:
+            if field != 'persona_productor':
+                setattr( p, field, d[field] )
+            else:
+                valor = [AdminAPI.getTypeOfProducers(d['persona_productor'])]
+                setattr( p, field, valor )
+
+        ActiveApp.getDB().session.add(p)
+        ActiveApp.getDB().session.commit()
+
+    @staticmethod
+    def addTypeOfProducer( d:Dict[str,str], relations ) -> None:
+        tipo = TipoProductor()
+        fields = AdminAPI.typeOfProducerPublicFields()
+
+        for field in fields:
+            setattr( tipo, field, d[field] )
+        tipo.persona_productor = relations
+
+        ActiveApp.getDB().session.add(tipo)
+        ActiveApp.getDB().session.commit()
+
+
+    # Delete functions
+    @staticmethod
     def deleteUser(user : Union[str,Users]) -> None:
         if (isinstance(user,str)):
             Users.query.filter_by(login=user).delete()
@@ -43,6 +76,35 @@ class AdminAPI():
         group.delete()
         ActiveApp.getDB().session.commit()
 
+    @staticmethod
+    def deleteCosecha(cosecha : Cosecha) -> None:
+        maybe(Cosecha).query.get(cosecha).delete()
+        ActiveApp.getDB().session.commit()
+
+    @staticmethod
+    def deletePersona(ciPersona : str) -> None:
+        p = Persona.query.filter_by(CI=ciPersona)
+
+        # only delete 1 element in the relation
+        t = p.first().persona_productor[0].persona_productor
+        filtered = filter(lambda p2: p2.CI!=ciPersona, t)
+        p.first().persona_productor[0].persona_productor = list(filtered) 
+        
+        p.delete()
+        ActiveApp.getDB().session.commit()
+
+    @staticmethod
+    def deleteTypeOfProducer(name : str) -> None:
+        t = TipoProductor.query.filter_by(description=name)
+
+        # delete all the persons related with t
+        for p in t.first().persona_productor:
+            p.persona_productor = []
+        
+        t.delete()
+        ActiveApp.getDB().session.commit()
+    
+    # Query functions
     @staticmethod
     def addGroupToUser(group : Union[str,Groups], user : Union[str,Users]) -> None:
 
@@ -66,11 +128,6 @@ class AdminAPI():
         maybe(user).cosecha_user.append(cosecha)
         ActiveApp.getDB().session.commit()
     
-    @staticmethod
-    def deleteCosecha(cosecha : Cosecha) -> None:
-        maybe(Cosecha).query.get(cosecha).delete()
-        ActiveApp.getDB().session.commit()
-
     @staticmethod
     def cosechasInRange(begin : Optional[date] = None,end : Optional[date] = None):
         if (begin is None):
@@ -160,21 +217,20 @@ class AdminAPI():
 
     @staticmethod
     def updPerson( ciPersona : str, d : Dict[str,str]) -> None:
-        p = Persona.query.filter_by(CI=ciPersona).first()
-        fields = AdminAPI.personaPublicFields()
-
-        for field in fields:
-            if field != 'persona_productor':
-                setattr( p, field, d[field] )
-            else:
-                valor = [AdminAPI.getTypeOfProducers(d['persona_productor'])]
-                setattr( p, field, valor )
-
-        ActiveApp.getDB().session.add(p)
-        ActiveApp.getDB().session.commit()
+        if ciPersona!=d['CI']:
+            AdminAPI.deletePersona( ciPersona )
+            AdminAPI.addPerson( d )
+        else:
+            AdminAPI.addPerson( d, ciPersona )
 
     @staticmethod
-    def deletePersona(ciPersona : str) -> None:
-        p = Persona.query.filter_by(CI=ciPersona).delete()
-        ActiveApp.getDB().session.commit()
+    def updTypeOfProducer( name : str, d : Dict[str,str]) -> None:
+        # Save relacions
+        t = TipoProductor.query.filter_by(description=name)
+        relations = t.first().persona_productor
+
+        # Delete and add
+        AdminAPI.deleteTypeOfProducer( name ) 
+        AdminAPI.addTypeOfProducer( d, relations )
+
 
