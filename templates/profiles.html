@@ -1,3 +1,4 @@
+{% from "formMacros.html" import render_mfield %}
 {% extends 'gridTemplate.html' %}
 
 {% block menu %}
@@ -28,19 +29,23 @@
 
     <div class="genericContainerBox" style="margin-top: 0.5em; overflow: auto;">
 
-
-        <div style="display: flex;margin-right: 20%">
-
-            {% for field in fields %}
-                <div style="width: 100%; display: flex; flex-direction:column; margin-left: 5px;">
-                    <div class="itemBox" style="margin-top: 0.5em; margin-left: 0.5em;text-align: center;">{{field}}</div>
-                    {% for item in coupled %}
-                    <div class="itemBox" style="margin-top: 0.5em; margin-left: 0.5em;">{{ item[field] }}</div>
+        <div >
+                <div style="display:flex;">
+                    {% for field in fields %}
+                        <div class="itemBox" style="text-align: center;">{{field}}</div>
                     {% endfor %}
                 </div>
-            {% endfor %}
+                
 
-
+                
+                {% for form in forms %}
+                    <form style="display:flex;">
+                        {% for f in form %}
+                            {{ f|safe }}
+                        {% endfor %}
+                    </form>
+                {% endfor %}
+            </div>
 
         </div>        
     </div>

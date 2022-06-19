@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, TypedDict
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
@@ -8,6 +8,11 @@ from init import ActiveApp
 from pymaybe import maybe
 from datetime import date, MINYEAR, MAXYEAR
 import re
+
+class FieldInfo(TypedDict):
+    valueType : type
+    modifiable : bool
+
 
 
 class User():
@@ -143,20 +148,30 @@ class AdminAPI():
         #return {'login':str,'name':str,'surname':str,'group_user':Groups,'cosecha_user':Cosecha}
         return fields
 
+    @staticmethod
+    def pFields() -> Dict[str,FieldInfo]:
+        fields = {}
+        fields['login']   = {'valueType':str,'modifiable':False}
+        fields['name']    = {'valueType':str,'modifiable':True}
+        fields['surname'] = {'valueType':str,'modifiable':True}
+        fields['group_user']   = {'valueType':List[str],'modifiable':True}
+        fields['cosecha_user'] = {'valueType':List[str],'modifiable':True}
+        #return {'login':str,'name':str,'surname':str,'group_user':Groups,'cosecha_user':Cosecha}
+        return fields
     
     @staticmethod
     def userPublicInfo(login : Optional[str] = None) -> Union[Dict[str,Any],List[Dict[str,Any]]]:
         if (login is not None):
             ret  = {}
             user = Users.query.filter_by(login=login).first()
-            for field in AdminAPI.userPublicFields().keys():
+            for field in AdminAPI.pFields().keys():
                 ret[field] = getattr(user,field)
         else:
             ret = []
             users = Users.query.all()
             for user in users:
                 userFields  = {}
-                for field in AdminAPI.userPublicFields().keys():
+                for field in AdminAPI.pFields().keys():
                     userFields[field] = str(getattr(user,field))
                 ret.append(userFields)
 

@@ -1,103 +1,18 @@
-{% extends 'gridTemplate.html' %}
+{% from "formMacros.html" import render_form %}
 
 
-{% block menu %}
-<h3 class="menuBox" style="border: 1px solid rgb(56,93,138);text-align: left;padding-left: 1em;font-size: 1em;">Perfiles de usuario</h3>
-{% endblock %}
 
-
-{% block main %}
-<div style="margin-top: 2%; margin-left: 10%; margin-right: 10%">
-    <div class="titleBox">
-        Crear Usuario
-    </div>
-
-    
-    <form class="genericContainerBox">
-        <fieldset style="background-color: white;">
-            
-            <div>
-                <label  class="label">Login:</label>
-                <br/>
-                <input type="text" class="field" id="login" name="login">
-            </div>
-        
-            
-            <br/>
-            
-            <div>
-                <label for="password" class="label" >Password:</label>
-                <br/>
-                <input type="password" class="field" id="password" name="password">
-            </div>
-            
-            <br/>
-
-
-            <div>
-                <label for="name" class="label" >Nombres:</label>
-                <br/>
-                <input type="text" class="field" id="name" name="name">
-            </div>
-            
-            <br/>
-        
-            <div>
-                <label for="surname" class="label" >Apellidos:</label>
-                <br/>
-                <input type="text" class="field" id="surname" name="surname">
-            </div>
-            
-            <br/>
-
-            <div>
-                <label for="CI" class="label" >CI:</label>
-                <br/>
-                <input type="text" id="CI" class="field" name="CI">
-            </div>
-        
-            <br/>
-
-            <div>
-                <label for="localPhone" class="label">Telefono local:</label>
-                <br/>
-                <input type="text" class="field" id="localPhone" name="localPhone">
-            </div>
-        
-            <br/>
-
-            <div>
-                <label for="cellPhone" class="label" >Telefono Celular:</label>
-                <br/>
-                <input type="text" class="field" id="cellPhone" name="cellPhone">
-            </div>
-        
-            <br/>
-
-            <div>
-                <label for="dir1" class="label" >Direccion 1:</label>
-                <br/>
-                <textarea class="field" id="dir1" name="dir1"></textarea>
-            </div>
-        
-            <br/>
-
-            <div>
-                <label for="dir2"  class="label">Direccion 2:</label>
-                <br/>
-                <input type="text" class="field" id="dir2" name="dir2">
-            </div>
-        
-            <br/>
-        
-            <input type="submit" value="Enviar">
-            <input type="submit" value="Vaciar">
-        </fieldset>
-    </form>
-    
-
-    
-
-</div>
-{% endblock %}
+{{render_form('Add user',
+    [ (form.login,"field")
+    , (form.password,"field")
+    , (form.groups,"field Fsquare")
+    , (form.confirm,"field")
+    , (form.nombres,"field")
+    , (form.apellidos,"field")
+    , (form.CI,"field")
+    , (form.localPhone,"field")
+    , (form.cellPhone,"field")
+    , (form.dir1,"field")
+    , (form.dir2,"field")
+    ])}}
 
