@@ -22,11 +22,41 @@
 
 .itemBox{
     min-width: 8em;
-    width: auto;
+    max-width: 100%;
     border: 3px solid rgb(56,93,138);
     border-radius: 5px;
     padding: 0.5em;
     background-color: white;
+    margin-left: 0.5em;
+    margin-top: 0.5em;
+}
+
+
+.defaultBox{
+    min-width: 11em;
+    max-width: 11em;
+    border: 3px solid rgb(56,93,138);
+    border-radius: 5px;
+    padding: 0.5em;
+    background-color: white;
+    margin-left: 0.5em;
+    margin-top: 0.5em;
+}
+
+.stringBox{
+    min-width: 10em;
+    max-width: 10em;
+    border: 3px solid rgb(56,93,138);
+    border-radius: 5px;
+    padding: 0.5em;
+    background-color: white;
+    margin-top: 0.5em; 
+    margin-left: 0.5em;
+    height: 1.5em;
+}
+
+.stringBox:focus{
+    outline: 1px solid rgb(0, 140, 255);
 }
 
 .iconBox{
