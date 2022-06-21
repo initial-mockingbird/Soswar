@@ -13,14 +13,28 @@ accessControl= Blueprint('accessControl', __name__,template_folder='templates',s
 @accessControl.route('/addUser',  methods=('GET','POST'))
 @check_privileges(['admin'])
 def addUser():
+    print("ENTRANDO ACA")
+    
+    print(request.form)
+    if request.form['action'] == 'EXIT':
+        redirect(url_for('accessControl.access_control'))
+    
     form = AddUserForm(request.form)
     if form.validate_on_submit():
+        print("AAAAAAAAAAAAAAAAAAA")
         print(request.form)
-        if request.form['action'] == 'EXIT':
-            print("En eliminar")
-            redirect(url_for('accessControl.access_control'))
-        else:
-            pass
+        if request.form['action'] != 'EXIT':
+            login     = form.login.data
+            password  = form.password.data
+            nombres   = form.nombres.data
+            apellidos = form.apellidos.data
+            groups    = ModifyUserFormParser.parseGroup(form.groups.data)
+            user = Users(login=login,
+                password=password,
+                name=nombres,
+                surname=apellidos,
+                group_user=groups)
+            ActiveApp.getDB().session.add(user)
         ActiveApp.getDB().session.commit()
 
 
@@ -82,7 +96,7 @@ def mkForm(pfields,pInfo,form):
 @accessControl.route('/control',  methods=('GET', 'POST'))
 @check_privileges(['admin'])
 def access_control():
-    print("ACA")
+    Node = request.args.get('action', None)
     coupled             = AdminAPI.userPublicInfo()
     fields              = AdminAPI.pFields()
     forms = []
@@ -99,12 +113,10 @@ def access_control():
         fs.append(aux)
 
     addUserForm = AddUserForm(request.form)
-    print(forms)
-    print(fs)
     return render_template('accessControl.html',
         forms=zip(fs,forms),
         fields=fields,
-        over=None,
+        over=Node,
         addUserForm=addUserForm,
-        url='accessControl.access_control')
+        url='accessControl.addUser')
 
