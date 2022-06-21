@@ -18,13 +18,13 @@ def addUser():
         print(request.form)
         if request.form['action'] == 'EXIT':
             print("En eliminar")
-            redirect(url_for('accessControl.access_control',modal='0'))
+            redirect(url_for('accessControl.access_control'))
         else:
             pass
         ActiveApp.getDB().session.commit()
 
 
-    return redirect(url_for('accessControl.access_control',modal='0'))
+    return redirect(url_for('accessControl.access_control'))
 
 
 
@@ -82,6 +82,7 @@ def mkForm(pfields,pInfo,form):
 @accessControl.route('/control',  methods=('GET', 'POST'))
 @check_privileges(['admin'])
 def access_control():
+    print("ACA")
     coupled             = AdminAPI.userPublicInfo()
     fields              = AdminAPI.pFields()
     forms = []
@@ -107,46 +108,3 @@ def access_control():
         addUserForm=addUserForm,
         url='accessControl.access_control')
 
-
-
-'''
-def createUser(form):
-    print(f"\n\n\nFORMCITO:{form}\n\n\n")
-
-@accessControl.route('/addUser',  methods=('GET', 'POST'))
-@check_privileges(['admin'])
-def add_user():
-    print(f"\n\n\nGRUPITOS:{Groups.query.all()}\n\n\n")
-    form = AddUserForm(request.form)
-
-    if (request.method == 'POST'):
-
-        if (request.form['submit'] == 'CLEAN'):
-            return redirect(url_for('accessControl.add_user'))
-
-        if(form.validate()):
-            createUser(form)
-            return redirect(url_for('accessControl.access_control'))
-        else:
-            return redirect(url_for('accessControl.add_user'))
-    return render_template('addUserT.html',form=form)
-
-@accessControl.route('/update',  methods=('GET', 'POST'))
-def addRandomUsers():
-    
-    newAdmin = Users(login="newAdim",password=Encrypt.encrypt("newAdim"),name="newAdim name",surname="newAdim surname")
-    jean   = Users(login="jean",password=Encrypt.encrypt("jean"), name="jean", surname="gonzales")
-
-    contaduria = Groups(group="contaduria")
-    
-    adminGroup = AdminAPI.lookupGroup('admin')
-    assert(adminGroup is not None)
-    AdminAPI.addGroup(contaduria)
-    AdminAPI.addUser(jean)
-    AdminAPI.addUser(newAdmin)
-    AdminAPI.addGroupToUser(adminGroup,newAdmin)
-    AdminAPI.addGroupToUser(contaduria,jean)
-    AdminAPI.deleteUser('dan')
-
-    return f"<h1>DONE</h1>"
-'''

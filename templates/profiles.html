@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block main %}
-{% if over == None %}
+{% if over != None %}
 {{render_form_('Agregar Usuario',
     [ (addUserForm.login,"stringBox")
     , (addUserForm.password,"stringBox")

@@ -9,7 +9,7 @@ from src.DB_Model import Users, Encrypt, Groups, Cosecha
 from src.login import login
 from src.accessControl import accessControl
 from datetime import date 
-
+from flask_wtf import FlaskForm
 '''
 admin_user = Users(login="admin_user",password=Encrypt.encrypt("admin_user"),name="admin name",surname="admin surname")
 dan   = Users(login="dan",password=Encrypt.encrypt("dan"), name="Daniel", surname="Pinto")
@@ -42,11 +42,12 @@ app.register_blueprint(accessControl)
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
+    form     = FlaskForm()
     login    = request.cookies.get('login')
     user     = Users.query.filter_by(login=login).first()
     if (user is not None):
         return redirect('/control')
-    return render_template('index.html')
+    return render_template('index.html',form=form)
 
 
 if __name__=="__main__":
