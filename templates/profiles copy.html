@@ -1,0 +1,48 @@
+{% extends 'gridTemplate.html' %}
+
+{% block menu %}
+<h3 class="menuBox" style="border: 1px solid rgb(56,93,138);text-align: left;padding-left: 1em;font-size: 1em;">Perfiles de usuario</h3>
+{% endblock %}
+
+{% block main %}
+<div style="margin-top: 2%; margin-left: 10%; margin-right: 10%">
+    <div class="titleBox">
+        Perfiles de Usuario
+    </div>
+
+    <form style="display: flex; justify-content: flex-end;gap:10px">
+
+            <input class="iconBox" type="text" minlength="10em" maxlength="10em" style="width:20em; background-color: white;">
+
+            <button class="iconBox button" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"><path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/></svg>
+            </button>
+
+            <button class="iconBox button" type="button">
+                <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
+            </button>
+
+            
+        
+    </form>
+
+    <div class="genericContainerBox" style="margin-top: 0.5em; overflow: auto;">
+
+        <div style="display: flex;margin-right: 20%">
+
+            {% for field in fields %}
+                <div style="width: 100%; display: flex; flex-direction:column; margin-left: 5px;">
+                    <div class="itemBox" style="margin-top: 0.5em; margin-left: 0.5em;text-align: center;">{{field}}</div>
+                    {% for item in coupled %}
+                    <div class="itemBox" style="margin-top: 0.5em; margin-left: 0.5em;">{{ item[field] }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+        </div>        
+    </div>
+
+    
+
+</div>
+{% endblock %}

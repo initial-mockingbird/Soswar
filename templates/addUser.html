@@ -1,18 +1,13 @@
-{% from "formMacros.html" import render_form %}
+{% from "formMacros.html" import render_form_ %}
 
 
 
-{{render_form('Add user',
+{{render_form_('Add user',
     [ (form.login,"field")
     , (form.password,"field")
     , (form.groups,"field Fsquare")
     , (form.confirm,"field")
     , (form.nombres,"field")
     , (form.apellidos,"field")
-    , (form.CI,"field")
-    , (form.localPhone,"field")
-    , (form.cellPhone,"field")
-    , (form.dir1,"field")
-    , (form.dir2,"field")
     ])}}
 

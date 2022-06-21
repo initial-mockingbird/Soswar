@@ -8,6 +8,7 @@ from init import ActiveApp
 from pymaybe import maybe
 from datetime import date, MINYEAR, MAXYEAR
 import re
+from src.forms import ModifyUserForm
 
 class FieldInfo(TypedDict):
     valueType : type
@@ -151,11 +152,11 @@ class AdminAPI():
     @staticmethod
     def pFields() -> Dict[str,FieldInfo]:
         fields = {}
-        fields['login']   = {'valueType':str,'modifiable':False}
-        fields['name']    = {'valueType':str,'modifiable':True}
-        fields['surname'] = {'valueType':str,'modifiable':True}
-        fields['group_user']   = {'valueType':List[str],'modifiable':True}
-        fields['cosecha_user'] = {'valueType':List[str],'modifiable':True}
+        fields['login']   = {'valueType':str,'modifiable':False,'label': ModifyUserForm().login.label}
+        fields['name']    = {'valueType':str,'modifiable':True,'label':ModifyUserForm().name.label}
+        fields['surname'] = {'valueType':str,'modifiable':True,'label':ModifyUserForm().surname.label}
+        fields['group_user']   = {'valueType':List[str],'modifiable':True,'label':ModifyUserForm().group_user.label}
+        fields['cosecha_user'] = {'valueType':List[str],'modifiable':True,'label':ModifyUserForm().cosecha_user.label}
         #return {'login':str,'name':str,'surname':str,'group_user':Groups,'cosecha_user':Cosecha}
         return fields
     
@@ -172,7 +173,7 @@ class AdminAPI():
             for user in users:
                 userFields  = {}
                 for field in AdminAPI.pFields().keys():
-                    userFields[field] = str(getattr(user,field))
+                    userFields[field] = getattr(user,field)
                 ret.append(userFields)
 
         
