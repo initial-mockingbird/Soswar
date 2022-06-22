@@ -1,0 +1,163 @@
+
+.label{
+    background-color: white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 0.1em;
+    padding-right: 0.3em;
+    padding-top: 0.2em;
+    padding-bottom: 0.5em;
+    border-bottom: 1em;
+    margin-bottom: 1em;
+
+}
+
+legend{
+    font-weight: bold;
+}
+
+.field{
+    fill: rgba(19, 19, 21, 0.6);
+    height: 2em;
+    border-radius: 10px;
+    background-color: white;
+    border: 0;
+    width: 100%;
+
+}
+
+.field:focus{
+    outline: 1px solid rgb(0, 140, 255);
+}
+
+.error:focus{
+    outline: 1px solid rgb(236, 43, 82);
+}
+
+.titleBox{
+    border: 1px solid rgb(56,93,138);
+    align-self: center;
+    background-color: rgb(198,217,241);
+    font-size: 1.2em;
+    color: black;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 1px 0px black;
+    padding-top: 0.3em ;
+    padding-bottom: 0.3em ;
+}
+
+
+.genericContainerBox{
+    border: 3px solid rgb(56,93,138);
+    border-radius: 5px;
+    padding: 0.5em;
+    padding-left: 30%;
+    padding-right: 30%;
+    background-color: rgb(183,222,232);
+}
+
+
+textarea{
+    min-height: 7em;
+}
+
+.itemBox{
+    min-width: 8em;
+    width: auto;
+    border: 3px solid rgb(56,93,138);
+    border-radius: 5px;
+    padding: 0.5em;
+    background-color: white;
+}
+
+
+.send {
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #3d405b;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 17px;
+    padding: 16px;
+    width: 130px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+   }
+   
+.send span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.send span:after {
+    content: '»';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -15px;
+    transition: 0.5s;
+}
+
+.send:hover span {
+    padding-right: 15px;
+}
+
+.send:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+
+.clean {
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #3d405b;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 17px;
+    padding: 16px;
+    width: 130px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+   }
+   
+.clean span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.clean span:after {
+    content: '\1F5D1';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -15px;
+    transition: 0.5s;
+}
+
+.clean:hover span {
+    padding-right: 15px;
+}
+
+.clean:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+.Fsquare{
+    min-width: 10em;
+    max-width: 15em;
+    border-radius: 0;
+    min-height: 5em;
+    overflow: auto;
+}

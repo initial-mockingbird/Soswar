@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import field
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, TypedDict
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
@@ -9,6 +9,44 @@ from src.DB_Model import productor
 from init import ActiveApp
 from pymaybe import maybe
 from datetime import date, MINYEAR, MAXYEAR
+import re
+from src.forms import ModifyUserForm
+
+class FieldInfo(TypedDict):
+    valueType : type
+    modifiable : bool
+
+
+
+class User():
+    @staticmethod
+    def addUser(user : Users) -> bool:
+        if (not Users.query.filter_by(login=user.login).first()):
+            ActiveApp.getDB().session.add(user)
+            ActiveApp.getDB().session.commit()
+            return True
+        
+        return False
+
+    @staticmethod
+    def deleteUser(user : Union[str,Users]) -> None:
+        if (isinstance(user,str)):
+            Users.query.filter_by(login=user).delete()
+        else:
+            maybe(user).delete()
+        ActiveApp.getDB().session.commit()
+    
+    @staticmethod
+    def lookupUser(login : str) -> Optional[Users]:
+        return Users.query.filter_by(login=login).first()
+
+    @staticmethod
+    def incrementalRegexLookup(regex : str) -> List[Users]:
+        return [ u for u in Users.query.all() if re.match(regex.strip(),u.login) ]
+
+    @staticmethod
+    def incrementalSearch(initPart : str) -> List[Users]:
+        return User.incrementalRegexLookup(f"{initPart.strip()}(.)*")
 
 class AdminAPI():    
     
@@ -169,19 +207,30 @@ class AdminAPI():
         return fields
 
     @staticmethod
+    def pFields() -> Dict[str,FieldInfo]:
+        fields = {}
+        fields['login']   = {'valueType':str,'modifiable':False,'label': ModifyUserForm().login.label}
+        fields['name']    = {'valueType':str,'modifiable':True,'label':ModifyUserForm().name.label}
+        fields['surname'] = {'valueType':str,'modifiable':True,'label':ModifyUserForm().surname.label}
+        fields['group_user']   = {'valueType':List[str],'modifiable':True,'label':ModifyUserForm().group_user.label}
+        fields['cosecha_user'] = {'valueType':List[str],'modifiable':True,'label':ModifyUserForm().cosecha_user.label}
+        #return {'login':str,'name':str,'surname':str,'group_user':Groups,'cosecha_user':Cosecha}
+        return fields
+    
+    @staticmethod
     def userPublicInfo(login : Optional[str] = None) -> Union[Dict[str,Any],List[Dict[str,Any]]]:
         if (login is not None):
             ret  = {}
             user = Users.query.filter_by(login=login).first()
-            for field in AdminAPI.userPublicFields().keys():
+            for field in AdminAPI.pFields().keys():
                 ret[field] = getattr(user,field)
         else:
             ret = []
             users = Users.query.all()
             for user in users:
                 userFields  = {}
-                for field in AdminAPI.userPublicFields().keys():
-                    userFields[field] = str(getattr(user,field))
+                for field in AdminAPI.pFields().keys():
+                    userFields[field] = getattr(user,field)
                 ret.append(userFields)
 
         

@@ -1,9 +1,9 @@
-from sqlalchemy import Column, ForeignKey, Integer, Table
+from sqlalchemy import Column, Date, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
 import hashlib
 from typing import Any
 from init import ActiveApp
-
+from datetime import datetime,date 
 class Encrypt():
     @staticmethod
     def encrypt(s : str) -> str:
@@ -85,7 +85,10 @@ class Cosecha(ActiveApp.getDB().Model):
     cosecha_user = ActiveApp.getDB().relationship("Users",secondary=cosecha_user,lazy="subquery",back_populates="cosecha_user")
 
     def __repr__(self) -> str:
-        return f'<start_date: {str(self.start_date)}\nend_date: {str(self.end_date)}'
+        meses  = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
+        return f'Cosecha {meses[self.start_date.month-1]} - {meses[self.end_date.month-1]} {self.end_date.year}'
+
+
 
 
 
