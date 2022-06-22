@@ -22,7 +22,8 @@ app.register_blueprint(producers)
 @app.route('/', methods=('GET', 'POST'))
 def index():
 
-    return make_response(redirect('/dataProducers'))
+    #return make_response(redirect('/dataProducers'))
+    '''
     columnName = [ 'Cedula:', 'Apellidos:', 'Nombres:', 'Telefono local:', 'Celular:', 'Tipo-productor:', 'Direccion 1:', 'Direccion 2:' ]
     columnId = AdminAPI.personaPublicFields()
     columnWidth = [ 120, 150, 150, 150, 150, 200, 200, 200 ]
@@ -30,6 +31,7 @@ def index():
     typesOfProducers = AdminAPI.getAllTypeOfProducers()
 
     return render_template('mainArea.html', htmlFile='dataProductors.html', cssFile='css/producers.css', columnName=columnName, columnWidth=columnWidth, columnId=columnId, producersList=producersList, typesOfProducers=typesOfProducers)
+    '''
     form     = FlaskForm()
     login    = request.cookies.get('login')
     user     = Users.query.filter_by(login=login).first()
