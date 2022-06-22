@@ -37,7 +37,8 @@ def index():
     user     = Users.query.filter_by(login=login).first()
     if (user is not None):
         return redirect('/control')
-    return render_template('index.html',form=form)
+    return render_template('mainArea.html', htmlFile='login.html', cssFile=['css/main.css','css/login.css'],form=form)
+    #return render_template('index.html',form=form)
 
 
 if __name__=="__main__":
