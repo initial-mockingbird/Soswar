@@ -6,6 +6,7 @@ from wtforms import StringField, PasswordField, ValidationError, TextAreaField, 
 from wtforms.validators import DataRequired, EqualTo, StopValidation, InputRequired
 from src.DB_Model import Cosecha, Persona, TipoProductor, Users,Groups
 from flask import flash
+import re
 
 def validate_login(form, field):
     if (Users.query.filter_by(login = field.data).first() is not None):
@@ -90,23 +91,19 @@ def validate_CI(form, field):
     if(Persona.query.filter_by(CI = field.data).first() is not None):
         raise ValidationError("La CI ya esta en el sistema.")
 
-    lista = [ 'V', 'J', 'E' ]
-    s = field.data
-    if len(s)<3:
-        raise ValidationError("La cedula debe tener al menos 3 caracteres.")
-    if( not (s[0] in lista) ):
-        raise ValidationError("La cedula debe comenvar con V o J o E.")
-    if( s[1]!='-' ):
-        raise ValidationError("El segundo caracter de la cedula debe ser -.")
-    if( not(s[2:len(s)].isdigit()) ):
-        raise ValidationError("Despues del '-' solo deben haber numeros.")
+    if re.search("[V,J,E](-\d)",field.data)==None:
+        raise ValidationError("Formato erroneo de cedula, debe ser: V-22222.")
+    
+def validate_phone(form,field):
+    if re.search("\d{4}(-\d{7})", field.data)==None:
+        raise ValidationError("El numero no cumple el formado ddd-ddddddd.")
 
 class AddProducerForm(FlaskForm):
     CI                  = StringField('Cedula', validators=[InputRequired(),validate_CI],description="No debe existir, Obligatorio*")
     surname             = StringField('Apellidos', validators=[InputRequired()])
     name                = StringField('Nombres', validators=[InputRequired()])
-    localPhone          = StringField('Telefono local', validators=[InputRequired()])
-    cellPhone           = StringField('Telefono celular', validators=[InputRequired()],description="Obligatorio*")
+    localPhone          = StringField('Telefono local', validators=[InputRequired(),validate_phone])
+    cellPhone           = StringField('Telefono celular', validators=[InputRequired(),validate_phone],description="Obligatorio*")
     persona_productor   = SelectField('Tipo de productor', choices=list(map(lambda tp: tp.description,TipoProductor.query.all())) )
     dir1                = StringField('Direccion 1', validators=[InputRequired()],description="Obligatorio*")
     dir2                = StringField('Direccion 2', validators=[InputRequired()],description="Obligatorio*")

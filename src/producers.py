@@ -108,8 +108,19 @@ def process_data_producers():
         return
 
     if request.form['action'] == 'Editar':
-        AdminAPI.updPerson( request.form['oldCI'], request.form ) 
-        return redirect( url_for('producers.data_producers', greenMessage="Edicion hecha con exito !!") )
+        # Validamos al usuario
+        form = AddProducerForm(request.form)
+        if form.validate_on_submit():
+            AdminAPI.updPerson( request.form['oldCI'], request.form )  
+            return redirect( url_for('producers.data_producers', greenMessage="Edicion hecha con exito !!") ) 
+        else:
+            msg : str = ""
+            for fieldName, errorMessages in form.errors.items():
+                for err in errorMessages:
+                    if msg=="":
+                        msg += err
+
+            return redirect( url_for('producers.data_producers', redMessage=msg) ) 
     else:
         AdminAPI.deletePersona( request.form['oldCI'] )
         return redirect( url_for('producers.data_producers', greenMessage="Eliminacion hecha con exito !!") )
@@ -133,10 +144,11 @@ def addProducers():
     if request.form['action'] == 'EXIT':
         return redirect(url_for('producers.data_producers'))
     
+    # Validamos al usuario
     form = AddProducerForm(request.form)
     if form.validate_on_submit():
         AdminAPI.addPerson( request.form )
-        return redirect(url_for('producers.data_producers')) 
+        return redirect(url_for('producers.data_producers', greenMessage="Productor agregado con exito !!")) 
 
     msg : str = ""
     for fieldName, errorMessages in form.errors.items():
@@ -154,8 +166,14 @@ def addTypeOfProducer():
     form = AddTypeOfProducer(request.form)
     if form.validate_on_submit():
         AdminAPI.addTypeOfProducer( request.form, [] )
-        return redirect(url_for('producers.type_of_data_producers'))
+        return redirect(url_for('producers.type_of_data_producers', greenMessage="Tipo de productor agregado con exito !!"))
 
-    return redirect( url_for('producers.type_of_data_producers', redMessage="Error al agregar tipo de productor !!") )
+    msg : str = ""
+    for fieldName, errorMessages in form.errors.items():
+        for err in errorMessages:
+            if msg=="":
+                msg += err
+
+    return redirect( url_for('producers.type_of_data_producers', redMessage=msg) )
 
 
