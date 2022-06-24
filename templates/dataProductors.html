@@ -1,3 +1,4 @@
+{% from "formMacros.html" import render_mfield,render_form_ %}
 {% extends 'gridTemplate.html' %}
 
 {% block head %}
@@ -9,6 +10,20 @@
 {% endblock %}
 
 {% block main %}
+{% if over != None %}
+{{render_form_('Agregar Usuario',
+    [ (addUserForm.CI,"stringBox")
+    , (addUserForm.surname,"stringBox")
+    , (addUserForm.name,"stringBox")
+    , (addUserForm.localPhone,"stringBox")
+    , (addUserForm.cellPhone,"stringBox")
+    , (addUserForm.persona_productor,"defaultBox")
+    , (addUserForm.dir1,"stringBox")
+    , (addUserForm.dir2,"stringBox")
+    ],
+    url,addUserForm)}}
+{% endif %}
+
 <div style="margin: 2% 10% 0% 10%; clear: left;">
     <div class="mainTitleBox"> Datos de productores </div>
 
@@ -17,13 +32,15 @@
         <div class="greenMessage"> {{greenMessage}} </div> 
 
         <form action="/dataProducers" method="GET" style="display: flex; float: right;">
+            {{ form.hidden_tag() }}
+            {{ form.csrf_token }}
             <input class="iconBox" type="text" id="filterByCI" name="filterByCI" placeholder="Buscar por cedula" style="width:20em; background-color: white;">
 
             <button class="iconBox button" type="submit">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"><path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/></svg>
             </button>
 
-            <button class="iconBox button" type="button">
+            <button class="iconBox button" type="submit" id="addProductor" name="addProductor" value="addProductor">
                 <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
             </button> 
         </form >
@@ -40,6 +57,9 @@
 
         {% for producer in producersList%}
         <form action="/updateProducers" method="POST" class="rowContainerDetails">
+            {{ form.hidden_tag() }}
+            {{ form.csrf_token }}
+
             {% for i in range(columnId|length) %}
 
                 {% if i==5 %}

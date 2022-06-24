@@ -4,6 +4,8 @@ from numpy import product
 from src.DB_Model import Encrypt, Persona
 from flask import render_template,request, redirect
 from src.PORM import AdminAPI
+from src.forms import *
+from flask_wtf import FlaskForm
 
 producers= Blueprint('producers', __name__,template_folder='templates',static_folder='static')
 
@@ -32,7 +34,27 @@ def data_producers():
     # => Sppecial field in the grid ( the options in the column 5 )
     typesOfProducers = AdminAPI.getAllTypeOfProducers()
 
-    return render_template('mainArea.html', htmlFile='dataProductors.html', cssFile='css/producers.css', columnName=columnName, columnWidth=columnWidth, columnId=columnId, producersList=producersList, typesOfProducers=typesOfProducers, redMessage=redMessage, greenMessage=greenMessage)
+    # Variables for the Form (addUser)
+    addUserForm = AddProducerForm(request.form)
+    addUserBool = request.args.get('addProductor', None)
+
+    return render_template(
+        'mainArea.html', 
+        htmlFile='dataProductors.html', 
+        cssFile=['css/producers.css', 'css/profiles.css'], 
+        columnName=columnName, 
+        columnWidth=columnWidth, 
+        columnId=columnId, 
+        producersList=producersList, 
+        typesOfProducers=typesOfProducers, 
+        redMessage=redMessage, 
+        greenMessage=greenMessage,
+        # Parameters for the FORM
+        addUserForm=addUserForm,
+        url='producers.addProducers',
+        over = addUserBool,
+        form = FlaskForm()
+    )
 
 @producers.route('/typeOfProducers',methods=('GET', 'POST'))
 def type_of_data_producers():
@@ -54,7 +76,26 @@ def type_of_data_producers():
     # Rows in the grid ( each one will be a FORM )
     typesOfProducers = AdminAPI.getAllTypeOfProducers( filterByDescription )
 
-    return render_template('mainArea.html', htmlFile='producers.html', cssFile='css/producers.css', columnName=columnName, columnWidth=columnWidth, columnId=columnId, typesOfProducers=typesOfProducers, redMessage=redMessage, greenMessage=greenMessage)
+    # Variables for the Form (addUser)
+    addUserForm = AddTypeOfProducer(request.form)
+    addUserBool = request.args.get('addProductor', None)
+
+    return render_template(
+        'mainArea.html', 
+        htmlFile='producers.html', 
+        cssFile=['css/producers.css', 'css/profiles.css'], 
+        columnName=columnName, 
+        columnWidth=columnWidth, 
+        columnId=columnId, 
+        typesOfProducers=typesOfProducers, 
+        redMessage=redMessage, 
+        greenMessage=greenMessage,
+        # Parameters for the FORM
+        addUserForm=addUserForm,
+        url='producers.addTypeOfProducer',
+        over = addUserBool,
+        form = FlaskForm()
+    )
 
 # Routes in charge of the backend of the aplications
 
@@ -62,9 +103,9 @@ def type_of_data_producers():
 def process_data_producers():
     if request.method != 'POST':
         return
-    
+
     if request.form['action'] == 'Editar':
-        AdminAPI.updPerson( request.form['oldCI'], request.form )
+        AdminAPI.updPerson( request.form['oldCI'], request.form ) 
         return redirect( url_for('producers.data_producers', greenMessage="Edicion hecha con exito !!") )
     else:
         AdminAPI.deletePersona( request.form['oldCI'] )
@@ -81,5 +122,31 @@ def process_type_of_producers():
     else:
         AdminAPI.deleteTypeOfProducer( request.form['oldDescription'] )
         return redirect( url_for('producers.type_of_data_producers', greenMessage="Eliminacion hecha con exito !!") ) 
+
+# Add routes
+
+@producers.route('/addProducers',  methods=('GET','POST'))
+def addProducers():
+    if request.form['action'] == 'EXIT':
+        return redirect(url_for('producers.data_producers'))
+    
+    form = AddProducerForm(request.form)
+    if form.validate_on_submit():
+        AdminAPI.addPerson( request.form )
+        return redirect(url_for('producers.data_producers'))
+
+    return redirect( url_for('producers.data_producers', redMessage="Error en al agregar a la persona !!") )
+
+@producers.route('/addTypeOfProducer',  methods=('GET','POST'))
+def addTypeOfProducer():
+    if request.form['action'] == 'EXIT':
+        return redirect(url_for('producers.type_of_data_producers'))
+    
+    form = AddTypeOfProducer(request.form)
+    if form.validate_on_submit():
+        AdminAPI.addTypeOfProducer( request.form, [] )
+        return redirect(url_for('producers.type_of_data_producers'))
+
+    return redirect( url_for('producers.type_of_data_producers', redMessage="Error al agregar tipo de productor !!") )
 
 

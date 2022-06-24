@@ -6,13 +6,13 @@ from src.DB_Model import Users, Groups
 def canonical_redirect(group : List[Groups] ) -> Response:
     if group == []:
         return make_response(redirect('/'))
-    match group[0].group:
-        case "admin":
-            return make_response(redirect('/control'))
-        case "analist":
-            return make_response(redirect('/dataProducers'))
-        case _:
-            return make_response(redirect('/'))
+    
+    if group[0].group == "admin":
+        return make_response(redirect('/control'))
+    if group[0].group == "analist":
+        return make_response(redirect('/dataProducers'))
+    else:
+        return make_response(redirect('/'))
 
 
 def check_privileges(valid_groups):
