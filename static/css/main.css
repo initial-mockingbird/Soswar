@@ -95,11 +95,11 @@
     padding: 5px 0px;
 }
 
-a.currentPage:link {color: #ff0000; text-decoration: none;}
+a.currentPage:link {color: black; text-decoration: none;}
 a.currentPage:visited {color: black; text-decoration: none;}
 a.currentPage:hover {text-decoration: underline;}
 
-a.otherPage:link {color: #ff0000; text-decoration: none;}
+a.otherPage:link {color: black; text-decoration: none;}
 a.otherPage:visited {color: rgb(160, 158, 158); text-decoration: none;}
 a.otherPage:hover {text-decoration: underline;}
 
