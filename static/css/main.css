@@ -99,10 +99,9 @@ a.currentPage:link {color: black; text-decoration: none;}
 a.currentPage:visited {color: black; text-decoration: none;}
 a.currentPage:hover {text-decoration: underline;}
 
-a.otherPage:link {color: black; text-decoration: none;}
+a.otherPage:link {color: rgb(160, 158, 158); text-decoration: none;}
 a.otherPage:visited {color: rgb(160, 158, 158); text-decoration: none;}
 a.otherPage:hover {text-decoration: underline;}
-
 
 .mainAreaGrid{
     height: 100%;
