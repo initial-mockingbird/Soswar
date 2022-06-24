@@ -82,6 +82,28 @@
     text-align: center;
 }
 
+.menuLinkBox{
+    width: 99%;
+    border: 1px solid black;
+    margin-bottom: 5px;
+    background-color: rgb(198,217,241);
+    font-size: 1.0em;
+    color: black;
+    font-family: sans-serif;
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 0px;
+}
+
+a.currentPage:link {color: #ff0000; text-decoration: none;}
+a.currentPage:visited {color: black; text-decoration: none;}
+a.currentPage:hover {text-decoration: underline;}
+
+a.otherPage:link {color: #ff0000; text-decoration: none;}
+a.otherPage:visited {color: rgb(160, 158, 158); text-decoration: none;}
+a.otherPage:hover {text-decoration: underline;}
+
+
 .mainAreaGrid{
     height: 100%;
     width: 100%;
