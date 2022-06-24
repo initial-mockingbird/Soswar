@@ -22,16 +22,18 @@ def check_privileges(valid_groups):
             login    = request.cookies.get('login')
             password = request.cookies.get('password')
             resp = make_response(redirect('/'))
-            resp.set_cookie('login', "",0)
-            resp.set_cookie('password',"",0)
+            
             if (not login or not password):
+                resp.set_cookie('login', "",0)
+                resp.set_cookie('password',"",0)
                 return resp
             user = Users.query.filter_by(login=login).first()
             if (not user or user is None):
+                resp.set_cookie('login', "",0)
+                resp.set_cookie('password',"",0)
                 return resp
             resp = canonical_redirect(user.group_user)
-            resp.set_cookie('login', "",0)
-            resp.set_cookie('password',"",0)
+            
             if (user.password == password and any([g.group in valid_groups for g in user.group_user])):
                 return function(*args, **kwargs)
             else:

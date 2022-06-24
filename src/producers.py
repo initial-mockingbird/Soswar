@@ -6,12 +6,14 @@ from flask import render_template,request, redirect
 from src.PORM import AdminAPI
 from src.forms import *
 from flask_wtf import FlaskForm
+from src.validators import check_privileges
 
 producers= Blueprint('producers', __name__,template_folder='templates',static_folder='static')
 
 # Routes for the interface with their respective initializations
 
 @producers.route('/dataProducers',methods=('GET', 'POST'))
+@check_privileges(['analist'])
 def data_producers():
     # GET parameters
     filterByCI = request.args.get('filterByCI', None)
@@ -57,6 +59,7 @@ def data_producers():
     )
 
 @producers.route('/typeOfProducers',methods=('GET', 'POST'))
+@check_privileges(['analist'])
 def type_of_data_producers():
     filterByDescription = request.args.get('filterByDescription', None)
     filterByDescription = None if filterByDescription=="" else filterByDescription
@@ -133,9 +136,15 @@ def addProducers():
     form = AddProducerForm(request.form)
     if form.validate_on_submit():
         AdminAPI.addPerson( request.form )
-        return redirect(url_for('producers.data_producers'))
+        return redirect(url_for('producers.data_producers')) 
 
-    return redirect( url_for('producers.data_producers', redMessage="Error en al agregar a la persona !!") )
+    msg : str = ""
+    for fieldName, errorMessages in form.errors.items():
+        for err in errorMessages:
+            if msg=="":
+                msg += err
+
+    return redirect( url_for('producers.data_producers', redMessage=msg) )
 
 @producers.route('/addTypeOfProducer',  methods=('GET','POST'))
 def addTypeOfProducer():

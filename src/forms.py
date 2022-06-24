@@ -70,7 +70,7 @@ class ModifyUserFormParser():
             return []
 
     @staticmethod
-    def parseDate(dt : Union[str,None]) -> List[Cosecha]:
+    def parseDate(dt : str |None) -> List[Cosecha]:
         if dt is None or dt == "":
             return []
         (_,m1,_,m2,y) = dt.split(sep=" ")
@@ -86,26 +86,33 @@ class ModifyUserFormParser():
         d2 = date(y2_,m2_,1)
         return Cosecha.query.filter_by(start_date=d1,end_date=d2).all()
 
-def validate_Person(form, field):
-    if (Persona.query.filter_by(CI = field.data).first() is not None):
-        print(f"\n\n\nFIELD IS: {field}\n\n\n")
-        print(f"\n\n\nFIELD.DATA IS: {field.data}\n\n\n")
-        raise ValidationError("El usuario pertenece ya al sistema.")
+def validate_CI(form, field):
+    if(Persona.query.filter_by(CI = field.data).first() is not None):
+        raise ValidationError("La CI ya esta en el sistema.")
+
+    lista = [ 'V', 'J', 'E' ]
+    s = field.data
+    if len(s)<3:
+        raise ValidationError("La cedula debe tener al menos 3 caracteres.")
+    if( not (s[0] in lista) ):
+        raise ValidationError("La cedula debe comenvar con V o J o E.")
+    if( s[1]!='-' ):
+        raise ValidationError("El segundo caracter de la cedula debe ser -.")
+    if( not(s[2:len(s)].isdigit()) ):
+        raise ValidationError("Despues del '-' solo deben haber numeros.")
 
 class AddProducerForm(FlaskForm):
-    CI                  = StringField('Cedula', validators=[InputRequired(),validate_Person],description="No debe existir, Obligatorio*")
+    CI                  = StringField('Cedula', validators=[InputRequired(),validate_CI],description="No debe existir, Obligatorio*")
     surname             = StringField('Apellidos', validators=[InputRequired()])
     name                = StringField('Nombres', validators=[InputRequired()])
     localPhone          = StringField('Telefono local', validators=[InputRequired()])
     cellPhone           = StringField('Telefono celular', validators=[InputRequired()],description="Obligatorio*")
-    persona_productor   = SelectField('Tipo de productor', choices=list(map(lambda tp: tp.description,TipoProductor.query.all())) + [""] )
+    persona_productor   = SelectField('Tipo de productor', choices=list(map(lambda tp: tp.description,TipoProductor.query.all())) )
     dir1                = StringField('Direccion 1', validators=[InputRequired()],description="Obligatorio*")
     dir2                = StringField('Direccion 2', validators=[InputRequired()],description="Obligatorio*")
 
 def validate_Description(form, field):
     if (TipoProductor.query.filter_by(description = field.data).first() is not None):
-        print(f"\n\n\nFIELD IS: {field}\n\n\n")
-        print(f"\n\n\nFIELD.DATA IS: {field.data}\n\n\n")
         raise ValidationError("El usuario pertenece ya al sistema.")
 
 class AddTypeOfProducer(FlaskForm):
