@@ -10,13 +10,11 @@ from init import ActiveApp
 from pymaybe import maybe
 from datetime import date, MINYEAR, MAXYEAR
 import re
-from src.forms import ModifyUserForm
+from src.forms import *
 
 class FieldInfo(TypedDict):
     valueType : type
     modifiable : bool
-
-
 
 class User():
     @staticmethod
@@ -75,8 +73,25 @@ class AdminAPI():
             p = Persona.query.filter_by(CI=ciPersona).first()
         else:
             p = Persona()
+            # La cedula no debe existir
+            if( Persona.query.filter_by(CI=d['CI']).first() is not None ):
+                return 1
+            
         fields = AdminAPI.personaPublicFields()
 
+        # La cedula debe tener un formato correcto
+        if re.search("[V,J,E](-\d)",d['CI'])==None:
+            return 2
+        
+        # El numero local debe tener un formato correcto
+        if re.search("\d{4}(-\d{7})", d['localPhone'])==None:
+            return 3
+        
+        # El numero celular debe tener un formato correcto
+        if re.search("\d{4}(-\d{7})", d['cellPhone'])==None:
+            return 4
+        
+        # Caso de input valido
         for field in fields:
             if field != 'persona_productor':
                 setattr( p, field, d[field] )
@@ -86,11 +101,15 @@ class AdminAPI():
 
         ActiveApp.getDB().session.add(p)
         ActiveApp.getDB().session.commit()
-
+        return 0
+    
     @staticmethod
     def addTypeOfProducer( d:Dict[str,str], relations ) -> None:
         tipo = TipoProductor()
         fields = AdminAPI.typeOfProducerPublicFields()
+
+        if (TipoProductor.query.filter_by(description = d['description']).first() is not None):
+            return 1
 
         for field in fields:
             setattr( tipo, field, d[field] )
@@ -98,7 +117,7 @@ class AdminAPI():
 
         ActiveApp.getDB().session.add(tipo)
         ActiveApp.getDB().session.commit()
-
+        return 0
 
     # Delete functions
     @staticmethod
@@ -122,6 +141,8 @@ class AdminAPI():
     @staticmethod
     def deletePersona(ciPersona : str) -> None:
         p = Persona.query.filter_by(CI=ciPersona)
+        if( p.first() is None ):
+            return 1
 
         # only delete 1 element in the relation
         t = p.first().persona_productor[0].persona_productor
@@ -130,10 +151,13 @@ class AdminAPI():
         
         p.delete()
         ActiveApp.getDB().session.commit()
+        return 0
 
     @staticmethod
     def deleteTypeOfProducer(name : str) -> None:
         t = TipoProductor.query.filter_by(description=name)
+        if( t.first() is None ):
+            return 1
 
         # delete all the persons related with t
         for p in t.first().persona_productor:
@@ -141,6 +165,7 @@ class AdminAPI():
         
         t.delete()
         ActiveApp.getDB().session.commit()
+        return 0
     
     # Query functions
     @staticmethod
