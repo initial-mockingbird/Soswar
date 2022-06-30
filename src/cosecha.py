@@ -1,0 +1,93 @@
+
+from typing import Any, List
+from flask import redirect, render_template, Blueprint, request, url_for, Request
+from init import ActiveApp
+from src.validators import check_privileges
+from src.PORM import CosechaViewAPI, mkForm
+from src.forms import AddCosechaForm, ModifyCosechaForm
+
+cosecha= Blueprint('cosecha', __name__,template_folder='templates',static_folder='static')
+
+
+@cosecha.route('/addCosecha',  methods=('GET','POST'))
+@check_privileges(['admin'])
+def addCosecha():
+    if request.form['action'] == 'EXIT':
+        return redirect(url_for('cosecha.cosechaControl'))
+    form = AddCosechaForm(request.form)
+    if form.validate_on_submit():
+        form.commit()
+
+    return redirect(url_for('cosecha.cosechaControl'))
+
+
+@cosecha.route('/modifyCosecha',  methods=('GET','POST'))
+@check_privileges(['admin'])
+def modifyCosecha():
+    form = ModifyCosechaForm(request.form)
+    if form.validate_on_submit():
+        form.commit(request.form['action'])
+
+    return redirect(url_for('cosecha.cosechaControl'))
+
+
+
+def buildPageArgs(request : Request):
+    return {
+        'AddCosecha':request.args.get('AddCosecha', None),
+        'SearchCosecha':request.args.get('SearchCosecha', None),
+        'FilterByID':request.args.get('FilterByID', None)
+    }
+    
+
+@cosecha.route('/cosechas',  methods=('GET', 'POST'))
+@check_privileges(['admin'])
+def cosechaControl():
+    args                = buildPageArgs(request)
+    Node                = args['AddCosecha']
+    coupled             = CosechaViewAPI.cosechaPublicInfo()
+    fields              = CosechaViewAPI.pFields()
+    args                = buildPageArgs(request)
+    forms = []
+    for c in coupled:
+        form = ModifyCosechaForm(request.form)
+        if args['SearchCosecha'] is not None and args['FilterByID'] is not None and args['FilterByID'] != "":
+            aux = args['FilterByID'] 
+            try:
+                n = int(aux)
+                if(c['ID'] != n):
+                    continue
+            except:
+                pass 
+        mkForm(fields,c,form)
+        
+
+        forms.append(form)
+
+
+    fs = []
+    for form in forms:
+        aux = []
+        for field in fields:
+            aux.append(getattr(form,field))
+        fs.append(aux)
+
+    addCosechaForm = AddCosechaForm(request.form)
+    zs = list(zip(fs,forms))
+
+    
+    
+    #print(zs)
+    #for (f,_) in zs:
+    #    print(f)
+
+    
+
+
+    return render_template('cosechasT.html',
+        forms=zs,
+        fields=fields,
+        over=Node,
+        addCosechaForm=addCosechaForm,
+        url='cosecha.addCosecha')
+

@@ -7,34 +7,36 @@
 
 {% block main %}
 {% if over != None %}
-{{render_form_('Agregar Usuario',
-    [ (addUserForm.login,"stringBox")
-    , (addUserForm.password,"stringBox")
-    , (addUserForm.groups,"defaultBox")
-    , (addUserForm.confirm,"stringBox")
-    , (addUserForm.nombres,"stringBox")
-    , (addUserForm.apellidos,"stringBox")
+{{render_form_('Agregar Cosecha',
+    [ (addCosechaForm.ID,"stringBox")
+    , (addCosechaForm.description,"stringBox")
+    , (addCosechaForm.start_date,"defaultBox")
+    , (addCosechaForm.end_date,"defaultBox")
     ],
-    url,addUserForm)}}
+    url,addCosechaForm)}}
 {% endif %}
 <div style="margin-top: 2%; margin-left: 10%; margin-right: 10%">
     <div class="titleBox">
-        Perfiles de Usuario
+        Portafolio de Cosechas
     </div>
 
-    <form style="display: flex; justify-content: flex-end;gap:10px",action="/control", method="GET">
+    <div style="display: flex; justify-content: flex-end;gap:10px">
 
-            <input class="iconBox" type="text" minlength="10em" maxlength="10em" style="width:20em; background-color: white;">
+        <form style="display: flex; gap: 10px" action="{{ url_for('cosecha.cosechaControl') }}", method="GET">
+            <input class="iconBox" type="text" name="FilterByID" placeholder="Buscar por ID"  style="width:20em;   background-color: white;">
 
-            <button class="iconBox button"  >
+            <button class="iconBox button" type="submit" name="SearchCosecha" value="SearchCosecha"  >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"><path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/></svg>
             </button>
+        </form>
 
-            <button class="iconBox button" type="submit" name="action" value="AddUser" >
+        <form action="{{ url_for('cosecha.cosechaControl') }}", method="GET">
+            <button class="iconBox button" type="submit" name="AddCosecha" value="AddCosecha" >
                 <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
             </button>
+        </form>
 
-    </form>
+    </div>
 
     <div class="genericContainerBox" style="margin-top: 0.5em; overflow: auto;">
 
@@ -48,7 +50,7 @@
 
                 
                 {% for (form,aux) in forms %}
-                    <form style="display:flex;"action="{{ url_for('accessControl.modifyUser') }}" method="post">
+                    <form style="display:flex;"action="{{ url_for('cosecha.modifyCosecha') }}" method="post">
                         {{ aux.hidden_tag() }}
                         {% for f in form %}
                             {{ f|safe }}

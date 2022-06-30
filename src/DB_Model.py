@@ -20,8 +20,7 @@ group_user = ActiveApp.getDB().Table("group_user",
 cosecha_user = ActiveApp.getDB().Table("cosecha_user",
     ActiveApp.getDB().Model.metadata,
     ActiveApp.getDB().Column('login',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('users.login'),primary_key=True),
-    ActiveApp.getDB().Column('cosecha',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('cosecha.start_date'),primary_key=True),
-    ActiveApp.getDB().Column('cosecha',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('cosecha.end_date'),primary_key=True)
+    ActiveApp.getDB().Column('cosecha',ActiveApp.getDB().Integer,ActiveApp.getDB().ForeignKey('cosecha.ID'),primary_key=True),
     )
 
 productor = ActiveApp.getDB().Table("productor",
@@ -32,6 +31,14 @@ productor = ActiveApp.getDB().Table("productor",
 
 class Groups(ActiveApp.getDB().Model):
     __tablename__ = "groups"
+
+    def __init__(self,**kwargs) -> None:
+        super().__init__()
+        for (k,v) in kwargs.items():
+            getattr(self,k)
+            setattr(self,k,v)
+        ActiveApp.getDB().session.commit()
+
     group = ActiveApp.getDB().Column(ActiveApp.getDB().Text,primary_key=True)
     group_user = ActiveApp.getDB().relationship("Users",secondary=group_user,lazy="subquery",back_populates="group_user")
 
@@ -41,6 +48,14 @@ class Groups(ActiveApp.getDB().Model):
 
 class Users(ActiveApp.getDB().Model):
     __tablename__ = "users"
+
+    def __init__(self,**kwargs) -> None:
+        super().__init__()
+        for (k,v) in kwargs.items():
+            getattr(self,k)
+            setattr(self,k,v)
+        ActiveApp.getDB().session.commit()
+    
     login        = ActiveApp.getDB().Column(ActiveApp.getDB().Text,primary_key=True)
     name         = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
     surname      = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
@@ -79,9 +94,18 @@ class TipoProductor(ActiveApp.getDB().Model):
 
 class Cosecha(ActiveApp.getDB().Model):
     __tablename__ = "cosecha"
-    start_date = ActiveApp.getDB().Column(ActiveApp.getDB().Date,primary_key=True)
-    end_date   = ActiveApp.getDB().Column(ActiveApp.getDB().Date,primary_key=True)
 
+    def __init__(self,**kwargs) -> None:
+        super().__init__()
+        for (k,v) in kwargs.items():
+            getattr(self,k)
+            setattr(self,k,v)
+        ActiveApp.getDB().session.commit()
+
+    start_date  = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
+    end_date    = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
+    ID         = ActiveApp.getDB().Column(ActiveApp.getDB().Integer,primary_key=True)
+    description = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
     cosecha_user = ActiveApp.getDB().relationship("Users",secondary=cosecha_user,lazy="subquery",back_populates="cosecha_user")
 
     def __repr__(self) -> str:

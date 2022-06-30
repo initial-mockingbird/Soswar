@@ -1,13 +1,15 @@
 from ctypes import Union
 from datetime import date
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, ValidationError, TextAreaField, SelectMultipleField, widgets, SelectField
-from wtforms.validators import DataRequired, EqualTo, StopValidation, InputRequired
+from wtforms import StringField, PasswordField, ValidationError, TextAreaField, SelectMultipleField, widgets, SelectField, DateField, IntegerField
+from wtforms.validators import DataRequired, EqualTo, StopValidation, InputRequired, NumberRange
 from src.DB_Model import Cosecha, Persona, TipoProductor, Users,Groups
 from flask import flash
 import re
-
+from src.PORM import CosechaControlAPI, UserControlAPI, UserViewAPI
+from init import ActiveApp
+from datetime import date 
 def validate_login(form, field):
     if (Users.query.filter_by(login = field.data).first() is not None):
         print(f"\n\n\nFIELD IS: {field}\n\n\n")
@@ -22,70 +24,96 @@ class AddUserForm(FlaskForm):
     apellidos  = StringField('Apellidos', validators=[InputRequired()],description="Obligatorio*")
     groups     = SelectField('Grupos',choices=list(map(lambda g: g.group,Groups.query.all())) + [""] )
 
+    def commit(self):
+        login     = self.login.data
+        password  = self.password.data
+        nombres   = self.nombres.data
+        apellidos = self.apellidos.data
+        groups    = UserViewAPI.Parse.parseGroup(self.groups.data)
+        u = Users(login=login,
+            password=password,
+            name=nombres,
+            surname=apellidos,
+            group_user=groups)
+        UserControlAPI.Control.addUser(u)
 
+    
 class ModifyUserForm(FlaskForm):
     login      = StringField('Login', validators=[InputRequired()],description="No debe existir, Obligatorio*",render_kw={'readonly':'readonly'})
     name       = StringField('Nombres', validators=[InputRequired()],description="Obligatorio*")
     surname    = StringField('Apellidos', validators=[InputRequired()],description="Obligatorio*")
-    group_user   = SelectField('Grupos',choices=list(map(lambda g: g.group,Groups.query.all())) + [""] )
+    group_user   = SelectField('Grupos',choices=Groups.query.all() + [""] )
     cosecha_user = SelectField('Cosechas',choices=Cosecha.query.all() + [""] )
 
+    def commit(self,mode : str):
+        login   = UserViewAPI.Parse.parseLogin(self.login.data)
+        user    = UserControlAPI.Data.lookupUser(login)
 
-class ModifyUserFormParser():
+        assert(user is not None)
 
-    months : Dict[str,int] = {
-        "Ene":1,
-        "Feb":2,
-        "Mar":3,
-        "Abr":4,
-        "May":5,
-        "Jun":6,
-        "Jul":7,
-        "Ago":8,
-        "Sep":9,
-        "Oct":10,
-        "Nov":11,
-        "Dic":12
-    }
-
-    @staticmethod
-    def parseLogin(login : str) -> str:
-        return login
-
-    @staticmethod
-    def parseName(name : str) -> str:
-        return name
-    
-    @staticmethod
-    def parseSurname(surname : str) -> str:
-        return surname
-    
-    @staticmethod
-    def parseGroup(groupName : Union[str,None]) -> List[Groups]:
-        if groupName is None or groupName == "":
-            return []
-        g = Groups.query.filter_by(group=groupName).first()
-        if (g and g is not None):
-            return [g]
+        if mode == 'Eliminar':
+            UserControlAPI.Control.deleteUser(user)
         else:
-            return []
+            assert(mode == 'Editar')
+            login   = UserViewAPI.Parse.parseLogin(self.login.data)
+            name    = UserViewAPI.Parse.parseName(self.name.data)
+            surname = UserViewAPI.Parse.parseSurname(self.surname.data)
+            group   = UserViewAPI.Parse.parseGroup(self.group_user.data)
+            cosecha = UserViewAPI.Parse.parseDate(self.cosecha_user.data)
 
-    @staticmethod
-    def parseDate(dt : str |None) -> List[Cosecha]:
-        if dt is None or dt == "":
-            return []
-        (_,m1,_,m2,y) = dt.split(sep=" ")
-        m1_ = ModifyUserFormParser.months[m1]
-        m2_ = ModifyUserFormParser.months[m2]
-        y2_ = int(y)
-        if (m1_ >= m2_):
-            y1_ = y2_-1
-        else:
-            y1_ = y2_
+            setattr(user,'name',name)
+            setattr(user,'surname',surname)
+            setattr(user,'group_user',group)
+            setattr(user,'cosecha_user',cosecha)
         
-        d1 = date(y1_,m1_,1)
-        d2 = date(y2_,m2_,1)
-        return Cosecha.query.filter_by(start_date=d1,end_date=d2).all()
+        ActiveApp.getDB().session.commit()
+
+class AddCosechaForm(FlaskForm):
+    ID         = IntegerField('ID', validators=[InputRequired(),NumberRange(min=0)],description="No debe existir, no negativo, Obligatorio*")
+    description = StringField('Descripcion', validators=[InputRequired()])
+    start_date  = DateField('Inicio', validators=[InputRequired()],description="Obligatorio* YYYY-MM-DD")
+    end_date    = DateField('Cierre', validators=[InputRequired()],description="Obligatorio* YYYY-MM-DD")
+
+    def commit(self):
+        ID : int | None         = self.ID.data
+        description : str        = self.description.data 
+        start_date : date | None = self.start_date.data
+        end_date   : date | None = self.end_date.data
+        c = Cosecha(ID=ID,
+            description=description,
+            start_date=start_date,
+            end_date=end_date)
+        CosechaControlAPI.Control.addCosecha(c)
+
+class ModifyCosechaForm(FlaskForm):
+    ID         = IntegerField('ID', validators=[InputRequired(),NumberRange(min=0)],description="No debe existir, no negativo, Obligatorio*")
+    description = StringField('Descripcion', validators=[InputRequired()])
+    start_date  = DateField('Inicio', validators=[InputRequired()],description="Obligatorio* YYYY-MM-DD")
+    end_date    = DateField('Cierre', validators=[InputRequired()],description="Obligatorio* YYYY-MM-DD")
+
+    def commit(self,mode : str):
+        ID : int | None         = self.ID.data
+        cosecha  = CosechaControlAPI.Data.lookupCosecha(ID)
+
+        assert(cosecha is not None)
+
+        if mode == 'Eliminar':
+            CosechaControlAPI.Control.deleteCosecha(cosecha)
+        elif mode == 'Editar':
+            description : str         = self.description.data 
+            start_date  : date | None = self.start_date.data
+            end_date    : date | None = self.end_date.data
+
+            setattr(cosecha,'ID',ID)
+            setattr(cosecha,'description',description)
+            setattr(cosecha,'start_date',start_date)
+            setattr(cosecha,'end_date',end_date)
+        else:
+            pass
+            
+        
+        ActiveApp.getDB().session.commit()
+
 
 def validate_CI(form, field):
     if(Persona.query.filter_by(CI = field.data).first() is not None):
