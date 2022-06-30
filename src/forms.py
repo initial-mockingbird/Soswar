@@ -1,5 +1,6 @@
 from ctypes import Union
 from datetime import date
+from faulthandler import is_enabled
 from typing import Any, Dict, List, Union
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, ValidationError, TextAreaField, SelectMultipleField, widgets, SelectField, DateField, IntegerField
@@ -82,7 +83,8 @@ class AddCosechaForm(FlaskForm):
         c = Cosecha(ID=ID,
             description=description,
             start_date=start_date,
-            end_date=end_date)
+            end_date=end_date,
+            is_enabled=True)
         CosechaControlAPI.Control.addCosecha(c)
 
 class ModifyCosechaForm(FlaskForm):
@@ -108,6 +110,8 @@ class ModifyCosechaForm(FlaskForm):
             setattr(cosecha,'description',description)
             setattr(cosecha,'start_date',start_date)
             setattr(cosecha,'end_date',end_date)
+        elif mode == "Pause":
+            cosecha.is_enabled = not cosecha.is_enabled
         else:
             pass
             

@@ -87,7 +87,7 @@ class TipoProductor(ActiveApp.getDB().Model):
     description       = ActiveApp.getDB().Column(ActiveApp.getDB().Text,primary_key=True)
     ID                = ActiveApp.getDB().Column(ActiveApp.getDB().Integer, unique=True)
     persona_productor = ActiveApp.getDB().relationship("Persona",secondary=productor,lazy="subquery",back_populates="persona_productor")
-
+    compras           = ActiveApp.getDB().relationship("Compra")
     def __repr__(self) -> str:
         return f'<description: {self.description}\nID: {self.ID}\npersona_productor:{self.persona_productor}>\n'
     
@@ -102,19 +102,47 @@ class Cosecha(ActiveApp.getDB().Model):
             setattr(self,k,v)
         ActiveApp.getDB().session.commit()
 
-    start_date  = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
-    end_date    = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
-    ID         = ActiveApp.getDB().Column(ActiveApp.getDB().Integer,primary_key=True)
-    description = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    start_date   = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
+    end_date     = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
+    ID           = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,primary_key=True)
+    description  = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
     cosecha_user = ActiveApp.getDB().relationship("Users",secondary=cosecha_user,lazy="subquery",back_populates="cosecha_user")
+    is_enabled   = ActiveApp.getDB().Column(ActiveApp.getDB().Boolean,nullable=False)
+    compras      = ActiveApp.getDB().relationship("Compra")
+    
 
     def __repr__(self) -> str:
-        meses  = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
-        return f'Cosecha {meses[self.start_date.month-1]} - {meses[self.end_date.month-1]} {self.end_date.year}'
+        #meses  = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
+        #return f'Cosecha {meses[self.start_date.month-1]} - {meses[self.end_date.month-1]} {self.end_date.year}'
+        return f'{self.description}'
+
+class Compra(ActiveApp.getDB().Model):
+    __tablename__ = "compra"
+
+    def __init__(self,**kwargs) -> None:
+        super().__init__()
+        for (k,v) in kwargs.items():
+            getattr(self,k)
+            setattr(self,k,v)
+        ActiveApp.getDB().session.commit()
+
+    ID            = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,primary_key=True)
+    date          = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
+    CI            = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    clase_cacao   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    precio        = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
+    cantidad      = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
+    humedadPer    = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
+    mermaPer      = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
+    cantitdad_total = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
+    monto           = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
+    observaciones   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
 
 
+    recolector_ID = ActiveApp.getDB().Column(ActiveApp.getDB().Integer,ForeignKey("tipo_productor.ID"))
+    cosecha_ID    = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,ForeignKey("cosecha.ID"))
 
-
+    
 
 
 

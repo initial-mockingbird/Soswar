@@ -189,7 +189,8 @@ class CosechaControlAPI():
             ActiveApp.getDB().session.commit()
         @staticmethod
         def deleteCosecha(cosecha : Cosecha) -> None:
-            cosecha.delete()
+            Cosecha.query.filter_by(ID=cosecha.ID).delete()
+            #cosecha.delete()
             ActiveApp.getDB().session.commit()
         
         @staticmethod
@@ -230,6 +231,7 @@ class CosechaViewAPI():
         fields['description']  = {'valueType':str,'modifiable':True ,'label':'Descripcion'}
         fields['start_date']   = {'valueType':str,'modifiable':True ,'label':'Inicio'}
         fields['end_date']     = {'valueType':str,'modifiable':True ,'label':'Cierre'}
+        fields['is_enabled']   = {'valueType':bool,'modifiable':True ,'label':'Habilitada?'}
         return fields
     
     @staticmethod
@@ -252,16 +254,19 @@ class CosechaViewAPI():
 
 
 def mkForm(pfields : Dict[str, FieldInfo],pInfo,form : FlaskForm):
+    print(f"fields are: {pfields}")
     for field in pfields:
         properties = {}
         containerAttrs = {}
+        print(f"field is: {field}")
         if (not pfields[field]['modifiable']):
             properties['readonly '] = 'readonly'
+            properties['class'] = f"{properties.get('class','')} disabled"
         if (pfields[field]['valueType'] == str):
             properties['value'] = pInfo[field]
-            properties['class'] = 'stringBox'
+            properties['class'] = f"{properties.get('class','')} stringBox"
         else:
-            properties['class'] = 'defaultBox'
+            properties['class'] = f"{properties.get('class','')} defaultBox"
             aux = pInfo[field][0] if pInfo[field] != [] else "" 
             setattr(getattr(form,field),'default',aux)
         

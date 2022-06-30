@@ -96,6 +96,19 @@
     height: 3em;
 }
 
+.disabledIconBoxEdit{
+    background-color:rgba(217, 217, 217, 0.445);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+    margin-top: 0.5em;
+    margin-left: 0.5em;
+    height: 3em;
+}
+
+
 .send {
     display: inline-block;
     border-radius: 4px;
@@ -134,4 +147,9 @@
 .send:hover span:after {
     opacity: 1;
     right: 0;
+}
+
+.disabled{
+    color: rgba(0,0,0,0.50);
+    background-color:rgba(217, 217, 217, 0.445);
 }

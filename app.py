@@ -20,6 +20,7 @@ app.register_blueprint(login)
 app.register_blueprint(accessControl)
 app.register_blueprint(producers)
 app.register_blueprint(cosecha)
+
 '''
 g = Groups(group="admin")
 GroupControlAPI.Control.addGroup(g)

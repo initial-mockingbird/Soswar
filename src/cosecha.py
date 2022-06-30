@@ -1,4 +1,5 @@
 
+from faulthandler import is_enabled
 from typing import Any, List
 from flask import redirect, render_template, Blueprint, request, url_for, Request
 from init import ActiveApp
@@ -47,8 +48,10 @@ def cosechaControl():
     Node                = args['AddCosecha']
     coupled             = CosechaViewAPI.cosechaPublicInfo()
     fields              = CosechaViewAPI.pFields()
+    fields.pop('is_enabled')
     args                = buildPageArgs(request)
     forms = []
+    enabled = []
     for c in coupled:
         form = ModifyCosechaForm(request.form)
         if args['SearchCosecha'] is not None and args['FilterByID'] is not None and args['FilterByID'] != "":
@@ -59,8 +62,18 @@ def cosechaControl():
                     continue
             except:
                 pass 
-        mkForm(fields,c,form)
+        is_enabled = c['is_enabled']
+        print(is_enabled)
+        enabled.append(is_enabled)
+        if not is_enabled:
+            _fields = {}
+            for k in fields:
+                _fields[k] = fields[k]
+                _fields[k]['modifiable']=False
+            fields = _fields
         
+        c.pop('is_enabled')
+        mkForm(fields,c,form)
 
         forms.append(form)
 
@@ -73,7 +86,7 @@ def cosechaControl():
         fs.append(aux)
 
     addCosechaForm = AddCosechaForm(request.form)
-    zs = list(zip(fs,forms))
+    zs = list(zip(fs,forms,enabled))
 
     
     
