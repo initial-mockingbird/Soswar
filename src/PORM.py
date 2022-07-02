@@ -1,10 +1,11 @@
 from __future__ import annotations
+from ast import In
 from dataclasses import field
 from typing import Any, Callable, Dict, List, Optional, Union, TypedDict
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
-from src.DB_Model import Cosecha, Encrypt, Persona, Users, Groups, group_user, TipoProductor
+from src.DB_Model import Cosecha, Encrypt, Persona, Users, Groups, group_user, TipoProductor, Compra
 from src.DB_Model import productor
 from init import ActiveApp
 from pymaybe import maybe
@@ -251,6 +252,81 @@ class CosechaViewAPI():
                 ret.append(cosechaFields)
 
         return ret
+
+
+class CompraControlAPI():
+    class Control():
+        @staticmethod
+        def addCompra( c : Compra ) -> int:
+            # The compra['ID'] can't exist
+            if( Compra.query.filter_by(ID=c.ID).first() is not None ):
+                return 1 
+
+            # Check the correct format of the CI
+            if re.search("[V,J,E](-\d)",c.CI)==None:
+                return 2
+            
+            ActiveApp.getDB().session.add(c)
+            ActiveApp.getDB().session.commit()
+            return 0
+
+        @staticmethod
+        def deleteCompra(compraID : Compra) -> None:
+            p = Compra.query.filter_by(ID=compraID)
+
+            # The CompraID, have to be in the db
+            if( p.first() is None ): return 1
+
+            p.delete() 
+            ActiveApp.getDB().session.commit()
+            return 0
+        
+        @staticmethod
+        def updateCompra( d:Dict[str,str] ) -> None:
+            # The compra['ID'] have to exist
+            if( Compra.query.filter_by(ID=d['ID']).first() is None ):
+                return 1
+            
+            # Check the correct format of the CI
+            if re.search("[V,J,E](-\d)",d['CI'])==None:
+                return 2
+            
+            # We get the Buyer
+            c = Compra.query.filter_by(ID=d['ID']).first()
+            # And also the list of fiels
+            fields = CompraControlAPI().Data().pFields()
+            
+            # Update manually each field
+            for field in fields: setattr( c, field, d[field] )
+            
+            ActiveApp.getDB().session.add(c)
+            ActiveApp.getDB().session.commit()
+            return 0
+
+    class Data():
+        @staticmethod
+        def pFields() -> Dict[str,FieldInfo]:
+            fields = {}
+            fields['ID']       = {'valueType':int,'modifiable':False,'label': 'Login'}
+            fields['date']     = {'valueType':date,'modifiable':True,'label':'Nombres'}
+            fields['CI']       = {'valueType':str,'modifiable':True,'label':'Apellidos'}
+            fields['precio']   = {'valueType':int,'modifiable':True,'label':'Grupo'}
+            fields['cantidad'] = {'valueType':int,'modifiable':True,'label':'Cosecha'}
+            fields['humedadPer'] = {'valueType':int,'modifiable':True,'label':'Cosecha'}
+            fields['mermaPer']   = {'valueType':int,'modifiable':True,'label':'Cosecha'}
+            fields['cantitdad_total'] = {'valueType':int,'modifiable':True,'label':'Cosecha'}
+            fields['monto'] = {'valueType':int,'modifiable':True,'label':'Cosecha'}
+            fields['observaciones'] = {'valueType':str,'modifiable':True,'label':'Cosecha'}
+            return fields
+        
+        @staticmethod
+        def lookupCompra( compraID:int=None ) -> List[Compra]|Compra:
+            if compraID==None:
+                compras = Compra.query.all()
+            else: 
+                compras = Compra.query.filter_by(ID=compraID).first()
+            return compras
+            
 
 
 def mkForm(pfields : Dict[str, FieldInfo],pInfo,form : FlaskForm):

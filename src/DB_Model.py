@@ -1,21 +1,21 @@
+from http.client import PRECONDITION_FAILED
 from sqlalchemy import Column, Date, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
 import hashlib
 from typing import Any
 from init import ActiveApp
 from datetime import datetime,date 
+
 class Encrypt():
     @staticmethod
     def encrypt(s : str) -> str:
         return hashlib.sha256(s.encode('utf-8')).hexdigest()
-
 
 group_user = ActiveApp.getDB().Table("group_user",
     ActiveApp.getDB().Model.metadata,
     ActiveApp.getDB().Column('login',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('users.login'),primary_key=True),
     ActiveApp.getDB().Column('group',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('groups.group'),primary_key=True)
     )
-
 
 cosecha_user = ActiveApp.getDB().Table("cosecha_user",
     ActiveApp.getDB().Model.metadata,
@@ -28,6 +28,7 @@ productor = ActiveApp.getDB().Table("productor",
     ActiveApp.getDB().Column('CI',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('persona.CI'),primary_key=True),
     ActiveApp.getDB().Column('description',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('tipo_productor.description'),primary_key=True)
     )
+
 
 class Groups(ActiveApp.getDB().Model):
     __tablename__ = "groups"
@@ -116,6 +117,7 @@ class Cosecha(ActiveApp.getDB().Model):
         #return f'Cosecha {meses[self.start_date.month-1]} - {meses[self.end_date.month-1]} {self.end_date.year}'
         return f'{self.description}'
 
+
 class Compra(ActiveApp.getDB().Model):
     __tablename__ = "compra"
 
@@ -141,6 +143,10 @@ class Compra(ActiveApp.getDB().Model):
 
     recolector_ID = ActiveApp.getDB().Column(ActiveApp.getDB().Integer,ForeignKey("tipo_productor.ID"))
     cosecha_ID    = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,ForeignKey("cosecha.ID"))
+
+    def __repr__(self) -> str:
+        return str(self.ID) + " " + self.CI + " " + str(self.precio)
+
 
     
 
