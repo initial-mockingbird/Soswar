@@ -131,18 +131,20 @@ class Compra(ActiveApp.getDB().Model):
     ID            = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,primary_key=True)
     date          = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
     CI            = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
-    clase_cacao   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
     precio        = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
+    clase_cacao   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
     cantidad      = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
     humedadPer    = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
     mermaPer      = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
-    cantitdad_total = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
-    monto           = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
     observaciones   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
-
 
     recolector_ID = ActiveApp.getDB().Column(ActiveApp.getDB().Integer,ForeignKey("tipo_productor.ID"))
     cosecha_ID    = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,ForeignKey("cosecha.ID"))
+
+    def addExtraAtt( self ):
+        self.merma = round(self.cantidad*(self.mermaPer/100),10)
+        self.cantidad_total = round( self.cantidad - self.merma, 10 )
+        self.monto = round( self.cantidad_total*self.precio, 10 )
 
     def __repr__(self) -> str:
         return str(self.ID) + " " + self.CI + " " + str(self.precio)

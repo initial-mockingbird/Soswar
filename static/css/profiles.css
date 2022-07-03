@@ -31,6 +31,9 @@
     margin-top: 0.5em;
 }
 
+.hideBox{
+    display: none;
+}
 
 .defaultBox{
     min-width: 11em;

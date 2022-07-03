@@ -13,6 +13,59 @@ from datetime import date, MINYEAR, MAXYEAR
 import re
 from flask_wtf import FlaskForm
 
+def loadFakeData(): 
+    # Load in the DB an admin
+    g = Groups(group="admin")
+    GroupControlAPI.Control.addGroup(g)
+    u = Users(login="admin_user",password=Encrypt.encrypt("admin_user"), name="Pedro", surname="Perez",group_user=[g])
+    UserControlAPI.Control.addUser(u)
+
+    # Load in the DB an analist 
+    g = Groups(group="analist")
+    GroupControlAPI.Control.addGroup(g)
+    u = Users(login="dan",password=Encrypt.encrypt("dan"), name="Daniel", surname="Pinto",group_user=[g])
+    UserControlAPI.Control.addUser(u)
+
+    # Load a Cosecha
+    cosecha1 = Cosecha( 
+            start_date = date(2022, 1, 1),
+            end_date = date(2022, 2, 2),
+            ID = 1,
+            description = "ss",
+            is_enabled = True,
+        )
+    CosechaControlAPI.Control.addCosecha( cosecha1 )
+
+    # Load a Compra in Cosecha 1 
+    d1 = {
+        'ID' : 2,
+        'date' : date(2022, 1, 1),
+        'CI' : 'V-123234',
+        'clase_cacao' : 'tipo1',
+        'precio' : 1.2,
+        'cantidad' : 30,
+        'humedadPer' : 8,
+        'mermaPer' : 1.0,
+        'observaciones' : 'xdddd',
+        'cosecha_ID' : 1,
+    } 
+    ans = CompraControlAPI().Control().addCompra( Compra(**d1) ) 
+
+    # Load a Compra in Cosecha 1 
+    d1 = {
+        'ID' : 3,
+        'date' : date(2022, 1, 1),
+        'CI' : 'V-123234',
+        'clase_cacao' : 'tipo1',
+        'precio' : 1.2,
+        'cantidad' : 30,
+        'humedadPer' : 8,
+        'mermaPer' : 1.0,
+        'observaciones' : 'xdddd',
+        'cosecha_ID' : 1,
+    } 
+    ans = CompraControlAPI().Control().addCompra( Compra(**d1) ) 
+
 
 class FieldInfo(TypedDict):
     valueType : type
@@ -307,18 +360,41 @@ class CompraControlAPI():
         @staticmethod
         def pFields() -> Dict[str,FieldInfo]:
             fields = {}
-            fields['ID']       = {'valueType':int,'modifiable':False,'label': 'Login'}
-            fields['date']     = {'valueType':date,'modifiable':True,'label':'Nombres'}
-            fields['CI']       = {'valueType':str,'modifiable':True,'label':'Apellidos'}
-            fields['precio']   = {'valueType':int,'modifiable':True,'label':'Grupo'}
-            fields['cantidad'] = {'valueType':int,'modifiable':True,'label':'Cosecha'}
-            fields['humedadPer'] = {'valueType':int,'modifiable':True,'label':'Cosecha'}
-            fields['mermaPer']   = {'valueType':int,'modifiable':True,'label':'Cosecha'}
-            fields['cantitdad_total'] = {'valueType':int,'modifiable':True,'label':'Cosecha'}
-            fields['monto'] = {'valueType':int,'modifiable':True,'label':'Cosecha'}
-            fields['observaciones'] = {'valueType':str,'modifiable':True,'label':'Cosecha'}
+            fields['ID']          = {'valueType':int, 'modifiable':False,'label': 'Login'}
+            fields['date']        = {'valueType':date,'modifiable':True, 'label':'Nombres'}
+            fields['CI']          = {'valueType':str, 'modifiable':True, 'label':'Apellidos'}
+            fields['precio']      = {'valueType':int, 'modifiable':True, 'label':'Grupo'}
+            fields['clase_cacao'] = {'valueType':str, 'modifiable':True, 'label':'Grupo'}
+            fields['cantidad']    = {'valueType':int, 'modifiable':True, 'label':'Cosecha'}
+            fields['humedadPer']  = {'valueType':int, 'modifiable':True, 'label':'Cosecha'}
+            fields['mermaPer']    = {'valueType':int, 'modifiable':True, 'label':'Cosecha'}
+            fields['observaciones'] = {'valueType':str,'modifiable':True, 'label':'Cosecha'}
+            fields['cosecha_ID']  = {'valueType':int, 'modifiable':True, 'label':'Cosecha'} 
+            fields['recolector_ID'] = {'valueType':int,'modifiable':True,'label':'Cosecha'} 
             return fields
         
+        @staticmethod
+        def fieldsUI () -> Dict[str,FieldInfo]:
+            # The order imply the in the UI
+            columnWidth = [ 120, 150, 150, 150, 150, 200, 200, 200, 200, 200, 200, 200, 200, 200 ]
+            fields = {}
+            fields['ID']       = {'valueType':int,'modifiable':False,'label': 'ID', 'width':70}
+            fields['date']     = {'valueType':date,'modifiable':True,'label':'Fecha', 'width':150}
+            fields['CI']       = {'valueType':str,'modifiable':True,'label':'Cedula', 'width':130}
+            fields['precio']   = {'valueType':int,'modifiable':True,'label':'Precio ($)', 'width':150}
+            fields['clase_cacao']   = {'valueType':str,'modifiable':True,'label':'Clase de cacao', 'width':150}
+            fields['cantidad'] = {'valueType':int,'modifiable':True,'label':'Cantidad (kg)', 'width':150}
+            fields['humedadPer'] = {'valueType':int,'modifiable':True,'label':'Humedad (%)', 'width':150}
+            fields['mermaPer']   = {'valueType':int,'modifiable':True,'label':'Merma (%)', 'width':150}
+            fields['merma']   = {'valueType':int,'modifiable':True,'label':'Merma (kg)', 'width':150}
+            fields['cantidad_total']   = {'valueType':int,'modifiable':True,'label':'Cantidad total (kg)', 'width':170}
+            fields['monto']   = {'valueType':int,'modifiable':True,'label':'Monto ($)', 'width':150}
+            fields['observaciones'] = {'valueType':str,'modifiable':True,'label':'observaciones', 'width':150}
+            fields['cosecha_ID'] = {'valueType':int,'modifiable':True,'label':'Cosecha ID', 'width':150} 
+            fields['recolector_ID'] = {'valueType':int,'modifiable':True,'label':'Recolector ID', 'width':150}
+            return fields
+        
+
         @staticmethod
         def lookupCompra( compraID:int=None ) -> List[Compra]|Compra:
             if compraID==None:

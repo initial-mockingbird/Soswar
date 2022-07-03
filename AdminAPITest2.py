@@ -49,14 +49,13 @@ class InsertionTestCases(unittest.TestCase):
             'cantidad' : 100,
             'humedadPer' : 1,
             'mermaPer' : 1,
-            'cantitdad_total' : 10,
-            'monto' : 10,
+            'clase_cacao' : 'clase1',
             'observaciones' : 'xdddd',
             'cosecha_ID' : 1,
         } 
         ans = self.control.addCompra( Compra(**d1) ) 
         assert( ans==0 )
-
+        
     def testAddCompraBadCI1(self):
         """Test case for adding a Compra with bad CI"""
 
@@ -69,8 +68,7 @@ class InsertionTestCases(unittest.TestCase):
             'cantidad' : 100,
             'humedadPer' : 1,
             'mermaPer' : 1,
-            'cantitdad_total' : 10,
-            'monto' : 10,
+            'clase_cacao' : 'clase1',
             'observaciones' : 'xdddd',
             'cosecha_ID' : 1,
         } 
@@ -89,8 +87,7 @@ class InsertionTestCases(unittest.TestCase):
             'cantidad' : 100,
             'humedadPer' : 1,
             'mermaPer' : 1,
-            'cantitdad_total' : 10,
-            'monto' : 10,
+            'clase_cacao' : 'clase1',
             'observaciones' : 'xdddd',
             'cosecha_ID' : 1,
         } 
@@ -109,8 +106,7 @@ class InsertionTestCases(unittest.TestCase):
             'cantidad' : 100,
             'humedadPer' : 1,
             'mermaPer' : 1,
-            'cantitdad_total' : 10,
-            'monto' : 10,
+            'clase_cacao' : 'clase1',
             'observaciones' : 'xdddd',
             'cosecha_ID' : 1,
         } 
@@ -129,8 +125,7 @@ class InsertionTestCases(unittest.TestCase):
             'cantidad' : 100,
             'humedadPer' : 1,
             'mermaPer' : 1,
-            'cantitdad_total' : 10,
-            'monto' : 10,
+            'clase_cacao' : 'clase1',
             'observaciones' : 'xdddd',
             'cosecha_ID' : 1,
         } 
@@ -149,8 +144,7 @@ class InsertionTestCases(unittest.TestCase):
             'cantidad' : 100,
             'humedadPer' : 1,
             'mermaPer' : 1,
-            'cantitdad_total' : 10,
-            'monto' : 10,
+            'clase_cacao' : 'clase1',
             'observaciones' : 'xdddd',
             'cosecha_ID' : 1,
         } 
@@ -170,7 +164,7 @@ class DeletionTestCases(unittest.TestCase):
         """Test case for delete a Compra that should be acepted by the API"""
         # Add the Compra to be deleted
         d1 = {
-            'ID' : 2,
+            'ID' : 200,
             'date' : datetime(2022, 1, 1),
             'CI' : 'V-123234',
             'clase_cacao' : 'tipo1',
@@ -178,15 +172,14 @@ class DeletionTestCases(unittest.TestCase):
             'cantidad' : 100,
             'humedadPer' : 1,
             'mermaPer' : 1,
-            'cantitdad_total' : 10,
-            'monto' : 10,
+            'clase_cacao' : 'clase1',
             'observaciones' : 'xdddd',
             'cosecha_ID' : 1,
         } 
         ans = self.control.addCompra( Compra(**d1) ) 
         assert( ans==0 )
         
-        ans = self.control.deleteCompra( 2 ) 
+        ans = self.control.deleteCompra( 200 ) 
         assert( ans==0 )
 
     def testDeleteCompraNotExist(self):
@@ -216,8 +209,7 @@ class SearchTestCases(unittest.TestCase):
             'cantidad' : 100,
             'humedadPer' : 1,
             'mermaPer' : 1,
-            'cantitdad_total' : 10,
-            'monto' : 10,
+            'clase_cacao' : 'clase1',
             'observaciones' : 'xdddd',
             'cosecha_ID' : 1,
         } 
@@ -255,10 +247,27 @@ class UpdateTestCases(unittest.TestCase):
 
     def testUpdateCompra(self):
         """Test case for update a Compra in the db"""
+        # Add a compra
+        d1 = {
+            'ID' : 777,
+            'date' : datetime(2022, 1, 1),
+            'CI' : 'V-123234',
+            'clase_cacao' : 'tipo1',
+            'precio' : 1,
+            'cantidad' : 100,
+            'humedadPer' : 1,
+            'mermaPer' : 1,
+            'clase_cacao' : 'clase1',
+            'observaciones' : 'xdddd',
+            'cosecha_ID' : 1,
+            'recolector_ID' : 1
+        } 
+        ans = self.control.addCompra( Compra(**d1) ) 
+        assert( ans==0 )
 
         # Dictionary needed for update
         d1 = {
-            'ID' : 10,
+            'ID' : 777,
             'date' : datetime(2022, 1, 1),
             'CI' : 'V-123234',
             'clase_cacao' : 'tipo1',
@@ -266,21 +275,21 @@ class UpdateTestCases(unittest.TestCase):
             'cantidad' : 100,
             'humedadPer' : 1,
             'mermaPer' : 1,
-            'cantitdad_total' : 10,
-            'monto' : 10,
+            'clase_cacao' : 'clase1',
             'observaciones' : 'xdddd',
             'cosecha_ID' : 1,
+            'recolector_ID' : 1
         } 
 
         # Search and verify
-        obj = self.dataCompra.lookupCompra( 10 ) 
+        obj = self.dataCompra.lookupCompra( 777 ) 
 
         # Update the object with ID 10
         assert( obj.precio==1.0 )
         ans = self.control.updateCompra( d1 )
 
         # Search and verify
-        obj = self.dataCompra.lookupCompra( 10 ) 
+        obj = self.dataCompra.lookupCompra( 777 ) 
         assert( obj.precio==2.0 )
         
 

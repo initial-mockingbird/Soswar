@@ -85,10 +85,13 @@
     color: red;
     float: left;
     font-size: 24px;
+    margin-top: 20px;
 }
 
 .greenMessage{
     color: green;
     float: left;
     font-size: 24px;
+    margin-top: 20px;
 }
+

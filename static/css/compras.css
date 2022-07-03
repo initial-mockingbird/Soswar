@@ -1,0 +1,44 @@
+.tittleGrid{
+    font-weight: bold;
+    margin: 0% 0.5px 0% 0%; 
+    padding: 4px;
+    background-color: #215968;
+    text-align:center; 
+    display: inline-block;
+    color: white;
+    height: 50px;
+    word-wrap: break-word;
+}
+
+.itemGrid{
+    font-weight: bold;
+    margin: 0% 0.5px 0% 0%; 
+    padding: 4px;
+    background-color: #d0e3ea;
+    text-align:center; 
+    display: inline-block;
+}
+
+.gridContainer{
+    /* Horizontal scroll */
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* color an border */
+    margin: 2% 0%;
+    padding: 0% 2% 1% 2%;
+}
+
+.iconBoxEditGrid{
+    background-color: rgb(33,89,104);
+    cursor: pointer;
+    transform: scale(1);
+}
+
+.containerEditIconGrid{
+    display: inline-block;
+    background-color: #d0e3ea;
+    width: 100px;
+    text-align: center;
+}
