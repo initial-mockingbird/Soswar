@@ -254,11 +254,9 @@ class CosechaViewAPI():
 
 
 def mkForm(pfields : Dict[str, FieldInfo],pInfo,form : FlaskForm):
-    print(f"fields are: {pfields}")
     for field in pfields:
         properties = {}
         containerAttrs = {}
-        print(f"field is: {field}")
         if (not pfields[field]['modifiable']):
             properties['readonly '] = 'readonly'
             properties['class'] = f"{properties.get('class','')} disabled"

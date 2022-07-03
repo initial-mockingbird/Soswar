@@ -1,24 +1,4 @@
 {% macro render_field(field) %}
-
-    {% if field.errors %}
-        <fieldset style="border: 3px solid rgb(236, 43, 82);">
-            <legend>
-                <div style="
-                    border-radius: 5px; 
-                    background-color: white; 
-                    padding: 0.2em; 
-                    padding-left: 0.4em; 
-                    padding-right: 0.4em;
-                    "
-                >
-                {{ field.label }}
-                </div>
-            </legend>
-            {% set val = field.errors | first %}
-            {{ field(value="",placeholder=val,**kwargs)|safe }}
-      
-        </fieldset>
-    {% else %}
         <fieldset style="border: 3px solid rgb(56,93,138);">
             <legend>
                 <div style="
@@ -34,7 +14,6 @@
             </legend>
             {{ field(**kwargs)|safe }}
         </fieldset>
-    {% endif %}
 {% endmacro %}
 
 {% macro render_form(title,fields) %}

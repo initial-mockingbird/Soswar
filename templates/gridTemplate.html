@@ -1,4 +1,10 @@
 <div class="mainGrid">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
     <div style="width: 100vw; height: 100vh;">
         <div  class="header">
             SISTEMA AUTOMATIZADO DE APOYO A LA <br>GESTION DE RECOLECCION DE COSECHAS DE CACAO

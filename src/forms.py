@@ -1,29 +1,77 @@
-from ctypes import Union
 from datetime import date
-from faulthandler import is_enabled
-from typing import Any, Dict, List, Union
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, ValidationError, TextAreaField, SelectMultipleField, widgets, SelectField, DateField, IntegerField
-from wtforms.validators import DataRequired, EqualTo, StopValidation, InputRequired, NumberRange
+from wtforms import StringField, PasswordField, SelectField, DateField, IntegerField
+from wtforms.validators import DataRequired, EqualTo, StopValidation, InputRequired, NumberRange, ValidationError
 from src.DB_Model import Cosecha, Persona, TipoProductor, Users,Groups
-from flask import flash
 import re
 from src.PORM import CosechaControlAPI, UserControlAPI, UserViewAPI
 from init import ActiveApp
 from datetime import date 
+
+'''
 def validate_login(form, field):
     if (Users.query.filter_by(login = field.data).first() is not None):
         print(f"\n\n\nFIELD IS: {field}\n\n\n")
         print(f"\n\n\nFIELD.DATA IS: {field.data}\n\n\n")
+        form.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
         raise ValidationError("El usuario pertenece ya al sistema.")
+'''
+
+class L(object):
+    """
+    Validates the length of a string.
+
+    :param min:
+        The minimum required length of the string. If not provided, minimum
+        length will not be checked.
+    :param max:
+        The maximum length of the string. If not provided, maximum length
+        will not be checked.
+    :param message:
+        Error message to raise in case of a validation error. Can be
+        interpolated using `%(min)d` and `%(max)d` if desired. Useful defaults
+        are provided depending on the existence of min and max.
+    """
+    def __init__(self, min=-1, max=-1, message=None):
+        assert min != -1 or max != -1, 'At least one of `min` or `max` must be specified.'
+        assert max == -1 or min <= max, '`min` cannot be more than `max`.'
+        self.min = min
+        self.max = max
+        self.message = message
+
+    def __call__(self, form, field):
+        l = field.data and len(field.data) or 0
+        if l < self.min or self.max != -1 and l > self.max:
+            message = self.message
+            if message is None:
+                if self.max == -1:
+                    message = field.ngettext('Field must be at least %(min)d character long.',
+                                             'Field must be at least %(min)d characters long.', self.min)
+                elif self.min == -1:
+                    message = field.ngettext('Field cannot be longer than %(max)d character.',
+                                             'Field cannot be longer than %(max)d characters.', self.max)
+                elif self.min == self.max:
+                    message = field.ngettext('Field must be exactly %(max)d character long.',
+                                             'Field must be exactly %(max)d characters long.', self.max)
+                else:
+                    message = field.gettext('Field must be between %(min)d and %(max)d characters long.')
+
+            raise ValidationError(message % dict(min=self.min, max=self.max, length=l))
+
 
 class AddUserForm(FlaskForm):
-    login      = StringField('Login', validators=[InputRequired(),validate_login],description="No debe existir, Obligatorio*")
+    login      = StringField('Login', validators=[InputRequired()],description="No debe existir, Obligatorio*")
     password   = PasswordField('Password', validators=[InputRequired(),EqualTo('confirm',message="Los Passwords deben ser iguales.")])
     confirm    = PasswordField('Confirmar Password')
     nombres    = StringField('Nombres', validators=[InputRequired()],description="Obligatorio*")
     apellidos  = StringField('Apellidos', validators=[InputRequired()],description="Obligatorio*")
     groups     = SelectField('Grupos',choices=list(map(lambda g: g.group,Groups.query.all())) + [""] )
+
+    def validate_login(self,field):
+        if (Users.query.filter_by(login = field.data).first() is not None):
+            print(">:(")
+            self.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
+            raise ValidationError("El usuario pertenece ya al sistema.")
 
     def commit(self):
         login     = self.login.data

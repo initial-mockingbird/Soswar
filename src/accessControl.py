@@ -1,6 +1,6 @@
 
 from typing import Any, List
-from flask import redirect, render_template, Blueprint, request, url_for
+from flask import redirect, render_template, Blueprint, request, url_for,flash
 from init import ActiveApp
 from src.DB_Model import Encrypt, Users, Groups, group_user
 from src.validators import check_privileges
@@ -18,8 +18,11 @@ def addUser():
         return redirect(url_for('accessControl.access_control'))
     form = AddUserForm(request.form)
     if form.validate_on_submit():
+        flash("BIEN",'error')
+        print("SUBMITTED")
         form.commit()
-
+    print("MAL")
+    flash("ASD",'error')
     return redirect(url_for('accessControl.access_control'))
 
 

@@ -148,3 +148,36 @@ a.otherPage:hover {text-decoration: underline;}
     text-align: center;
     font-weight: bold;
 }
+
+
+.error{
+    position:fixed;
+    z-index: 1000;
+    margin-left: 45%;
+    margin-top: 2em;
+    font-weight: bold;
+    max-height: 5em;
+    background-color: rgb(217,79,79);
+    color:white;
+    padding: 1em;
+    -moz-animation: fade-out 5s;
+    /* Firefox */
+    -webkit-animation: fade-out 5s;
+    /* Safari and Chrome */
+    -o-animation: fade-out 5s;
+    /* Opera */
+    animation: fade-out 5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fade-out {
+    0%   { opacity: 1;}
+    70%  { opacity: 1;}
+    100% { opacity: 0;width: 0; height: 0; padding: 0;  visibility: hidden;}
+} 
+
+@-webkit-keyframes fade-out {
+    0%   { opacity: 1;}
+    70%  { opacity: 1;}
+    100% { opacity: 0;width: 0; height: 0; padding: 0;  visibility: hidden;}
+} 
