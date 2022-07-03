@@ -2,7 +2,7 @@ from datetime import date
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, DateField, IntegerField
 from wtforms.validators import DataRequired, EqualTo, StopValidation, InputRequired, NumberRange, ValidationError
-from src.DB_Model import Cosecha, Persona, TipoProductor, Users,Groups
+from src.DB_Model import Cosecha,Compra, Persona, TipoProductor, Users,Groups
 import re
 from src.PORM import CosechaControlAPI, UserControlAPI, UserViewAPI
 from init import ActiveApp
@@ -195,3 +195,27 @@ def validate_Description(form, field):
 class AddTypeOfProducer(FlaskForm):
     ID          = StringField('ID', validators=[InputRequired()],description="No debe existir, Obligatorio*")
     description = StringField('description', validators=[InputRequired(),validate_Description])
+    precio      = StringField('precio', validators=[InputRequired()],description="No debe existir, Obligatorio*")
+
+def validate_CI_Buy(form, field):
+    if re.search("[V,J,E](-\d)",field.data)==None:
+        raise ValidationError("Formato erroneo de cedula, debe ser: V-22222.")
+
+def valid_ID_buy(form, field):
+    if(Compra.query.filter_by(ID = field.data).first() is not None):
+        raise ValidationError("El ID ya esta en el sistema.")
+
+class AddBuy(FlaskForm): 
+    ID             = IntegerField('ID', validators=[InputRequired(),NumberRange(min=0),valid_ID_buy],description="No debe existir, no negativo, Obligatorio*")
+    date           = DateField('date', format='%Y-%m-%d', validators=[InputRequired()])
+    CI             = StringField('CI', validators=[InputRequired(),validate_CI_Buy],description="No debe existir, Obligatorio*")
+    precio         = IntegerField('precio', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    clase_cacao    = StringField('clase_cacao', validators=[InputRequired()],description="No debe existir, Obligatorio*")
+    cantidad       = IntegerField('cantidad', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    humedadPer     = IntegerField('humedadPer', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    mermaPer       = IntegerField('mermaPer', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    observaciones  = StringField('observaciones', validators=[InputRequired()],description="No debe existir, Obligatorio*")
+    recolector_ID  = IntegerField('recolector_ID', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    cosecha_ID     = IntegerField('cosecha_ID', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    form_type      = StringField('form_type', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+

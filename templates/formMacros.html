@@ -104,6 +104,10 @@
         {% for (field,classes) in fields %}
             {% if field.errors %}
                 {{render_field(field,class="field error",)}}
+            {% elif  classes=='hideBox'%}
+                <fieldset style="display: none;">
+                    {{ field(**kwargs)|safe }}
+                </fieldset>
             {% else %}
                 {{render_field(field,class=classes)}}
             {% endif %}

@@ -1,21 +1,21 @@
+from http.client import PRECONDITION_FAILED
 from sqlalchemy import Column, Date, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
 import hashlib
 from typing import Any
 from init import ActiveApp
 from datetime import datetime,date 
+
 class Encrypt():
     @staticmethod
     def encrypt(s : str) -> str:
         return hashlib.sha256(s.encode('utf-8')).hexdigest()
-
 
 group_user = ActiveApp.getDB().Table("group_user",
     ActiveApp.getDB().Model.metadata,
     ActiveApp.getDB().Column('login',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('users.login'),primary_key=True),
     ActiveApp.getDB().Column('group',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('groups.group'),primary_key=True)
     )
-
 
 cosecha_user = ActiveApp.getDB().Table("cosecha_user",
     ActiveApp.getDB().Model.metadata,
@@ -28,6 +28,7 @@ productor = ActiveApp.getDB().Table("productor",
     ActiveApp.getDB().Column('CI',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('persona.CI'),primary_key=True),
     ActiveApp.getDB().Column('description',ActiveApp.getDB().Text,ActiveApp.getDB().ForeignKey('tipo_productor.description'),primary_key=True)
     )
+
 
 class Groups(ActiveApp.getDB().Model):
     __tablename__ = "groups"
@@ -86,6 +87,7 @@ class TipoProductor(ActiveApp.getDB().Model):
     __tablename__ = "tipo_productor"
     description       = ActiveApp.getDB().Column(ActiveApp.getDB().Text,primary_key=True)
     ID                = ActiveApp.getDB().Column(ActiveApp.getDB().Integer, unique=True)
+    precio            = ActiveApp.getDB().Column(ActiveApp.getDB().Integer) 
     persona_productor = ActiveApp.getDB().relationship("Persona",secondary=productor,lazy="subquery",back_populates="persona_productor")
     compras           = ActiveApp.getDB().relationship("Compra")
     def __repr__(self) -> str:
@@ -116,6 +118,7 @@ class Cosecha(ActiveApp.getDB().Model):
         #return f'Cosecha {meses[self.start_date.month-1]} - {meses[self.end_date.month-1]} {self.end_date.year}'
         return f'{self.description}'
 
+
 class Compra(ActiveApp.getDB().Model):
     __tablename__ = "compra"
 
@@ -129,18 +132,24 @@ class Compra(ActiveApp.getDB().Model):
     ID            = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,primary_key=True)
     date          = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
     CI            = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
-    clase_cacao   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
     precio        = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
+    clase_cacao   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
     cantidad      = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
     humedadPer    = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
     mermaPer      = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
-    cantitdad_total = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
-    monto           = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
     observaciones   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
-
 
     recolector_ID = ActiveApp.getDB().Column(ActiveApp.getDB().Integer,ForeignKey("tipo_productor.ID"))
     cosecha_ID    = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,ForeignKey("cosecha.ID"))
+
+    def addExtraAtt( self ):
+        self.merma = round(self.cantidad*(self.mermaPer/100),10)
+        self.cantidad_total = round( self.cantidad - self.merma, 10 )
+        self.monto = round( self.cantidad_total*self.precio, 10 )
+
+    def __repr__(self) -> str:
+        return str(self.ID) + " " + self.CI + " " + str(self.precio)
+
 
     
 

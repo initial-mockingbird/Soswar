@@ -130,7 +130,7 @@ a.otherPage:hover {text-decoration: underline;}
     text-align: center;
 }
 
-/* CSS for login.html */
+/* CSS for subPages */
 
 .mainTitleBox{
     /*Caja*/
@@ -148,7 +148,6 @@ a.otherPage:hover {text-decoration: underline;}
     text-align: center;
     font-weight: bold;
 }
-
 
 .error{
     position:fixed;
@@ -181,3 +180,20 @@ a.otherPage:hover {text-decoration: underline;}
     70%  { opacity: 1;}
     100% { opacity: 0;width: 0; height: 0; padding: 0;  visibility: hidden;}
 } 
+.mainTitleBoxDark{
+    /*Caja*/
+    align-self: center;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+    margin-bottom: 0.5%;
+    background-color: #215968;
+    border: 3px solid rgb(120, 147, 180);   
+    overflow: auto;
+
+    /*Texto*/
+    font-size: 1.2em;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    font-weight: bold;
+}

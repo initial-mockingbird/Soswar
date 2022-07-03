@@ -26,7 +26,7 @@ def data_producers():
     greenMessage = "" if greenMessage==None else greenMessage
 
     # Name of each column in the grid
-    columnName = [ 'Cedula:', 'Apellidos:', 'Nombres:', 'Telefono local:', 'Celular:', 'Tipo-productor:', 'Direccion 1:', 'Direccion 2:' ]
+    columnName = [ 'Cedula:', 'Apellidos:', 'Nombres:', 'Telefono local:', 'Celular:', 'Tipo-recolector:', 'Direccion 1:', 'Direccion 2:' ]
     # Internal id number columns for the backend
     columnId = AdminAPI.personaPublicFields()
     # Width of each columns in the grid
@@ -71,11 +71,11 @@ def type_of_data_producers():
     greenMessage = "" if greenMessage==None else greenMessage
     
     # Name of each column in the grid
-    columnName = [ 'ID:', 'Descripcion:' ]
+    columnName = [ 'ID:', 'Descripcion:', 'precio' ]
     # Internal id number columns for the backend
     columnId = AdminAPI.typeOfProducerPublicFields()
     # Width of each columns in the grid
-    columnWidth = [ 50, 200 ]
+    columnWidth = [ 50, 200, 50 ]
     # Rows in the grid ( each one will be a FORM )
     typesOfProducers = AdminAPI.getAllTypeOfProducers( filterByDescription )
 
