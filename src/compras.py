@@ -2,7 +2,7 @@ from ast import Return
 from xmlrpc.client import boolean
 from flask import  url_for, make_response, redirect, Blueprint, request, abort
 import flask
-from numpy import product
+from numpy import integer, product
 from sqlalchemy import column
 from src.DB_Model import Encrypt, Persona, Compra
 from flask import render_template,request, redirect
@@ -12,6 +12,7 @@ from flask_wtf import FlaskForm
 from src.validators import check_privileges
 from src.PORM import CosechaControlAPI, CompraControlAPI
 from datetime import date, MINYEAR, MAXYEAR, datetime
+from flask_weasyprint import HTML, render_pdf
 
 # Auxiliar functions
 def getCosechaName( c:Cosecha ):
@@ -136,3 +137,30 @@ def compras_control():
     flash(msg,"redMessage")
     return redirect('/compras/'+cosechaID)
 
+# Route for handle PDF 
+
+@compras.route('/comprasPDF/<cosechaID>/<fields>',methods=('GET', 'POST'))
+def compras_pdf( cosechaID:int, fields ):
+    currentCosecha = CosechaControlAPI().Data().lookupCosecha( cosechaID )
+    compras = currentCosecha.compras 
+
+    # Round fields
+    for c in compras:
+        c.addExtraAtt()
+        c.cantidad = round(c.cantidad,2)
+        c.merma = round(c.merma,2)
+        c.monto = round(c.monto,2)
+
+
+    # Define fileds of the PDF
+    fields = { 
+        'ID':{'label':'ID', 'width':40}, 
+        'date':{'label':'fecha', 'width':110}, 
+        'CI':{'label':'cedula', 'width':120},
+        'cantidad':{'label':'cantidad (kg)', 'width':120},
+        'merma':{'label':'merma (kg)', 'width':110},
+        'monto':{'label':'monto ($)', 'width':105}
+    }
+
+    html = render_template('comprasPDF.html', cosechaID=cosechaID, compras=compras, fields=fields)
+    return render_pdf(HTML(string=html))

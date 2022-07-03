@@ -67,7 +67,7 @@
 
 .tableContainerProductors{
     float: right;
-    width: 24vw;
+    width: 28vw;
     /* Horizontal scroll */
     white-space: nowrap;
     overflow-x: scroll;

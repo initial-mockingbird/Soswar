@@ -148,6 +148,7 @@ def validate_Description(form, field):
 class AddTypeOfProducer(FlaskForm):
     ID          = StringField('ID', validators=[InputRequired()],description="No debe existir, Obligatorio*")
     description = StringField('description', validators=[InputRequired(),validate_Description])
+    precio      = StringField('precio', validators=[InputRequired()],description="No debe existir, Obligatorio*")
 
 def validate_CI_Buy(form, field):
     if re.search("[V,J,E](-\d)",field.data)==None:

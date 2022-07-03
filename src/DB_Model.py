@@ -87,6 +87,7 @@ class TipoProductor(ActiveApp.getDB().Model):
     __tablename__ = "tipo_productor"
     description       = ActiveApp.getDB().Column(ActiveApp.getDB().Text,primary_key=True)
     ID                = ActiveApp.getDB().Column(ActiveApp.getDB().Integer, unique=True)
+    precio            = ActiveApp.getDB().Column(ActiveApp.getDB().Integer) 
     persona_productor = ActiveApp.getDB().relationship("Persona",secondary=productor,lazy="subquery",back_populates="persona_productor")
     compras           = ActiveApp.getDB().relationship("Compra")
     def __repr__(self) -> str:

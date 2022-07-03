@@ -7,7 +7,7 @@
 
 {% block menu %}
     <div class="menuLinkBox"><a class="otherPage" href="/dataProducers">Datos del productores</a></div>
-    <div class="menuLinkBox"><a class="currentPage" href="/typeOfProducers">Tipos de productores</a></div>
+    <div class="menuLinkBox"><a class="currentPage" href="/typeOfProducers">Tipos de recolectores</a></div>
 {% endblock %}
 
 {% block main %}
@@ -15,12 +15,13 @@
 {{render_form_('Agregar Usuario',
     [ (addUserForm.ID,"stringBox")
     , (addUserForm.description,"stringBox")
+    , (addUserForm.precio,"stringBox")
     ],
     url,addUserForm)}}
 {% endif %}
 
 <div style="margin: 2% 10% 0% 10%; clear: left;">
-    <div class="mainTitleBox"> Tipos de productores </div>
+    <div class="mainTitleBox"> Tipos de recolectores </div>
 
     <div style="width: 100%; margin-top: 2em;">
         <div class="redMessage"> {{redMessage}} </div> 

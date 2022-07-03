@@ -26,6 +26,9 @@ def loadFakeData():
     u = Users(login="dan",password=Encrypt.encrypt("dan"), name="Daniel", surname="Pinto",group_user=[g])
     UserControlAPI.Control.addUser(u)
 
+    # Load type of producer
+    AdminAPI.addTypeOfProducer({'ID':1, 'description':"casa", 'precio':1},[]) 
+
     # Load a Cosecha
     cosecha1 = Cosecha( 
             start_date = date(2022, 1, 1),
@@ -637,7 +640,7 @@ class AdminAPI():
 
     @staticmethod
     def typeOfProducerPublicFields() -> List[str]:
-        return [ 'ID','description' ]
+        return [ 'ID','description', 'precio' ]
 
     @staticmethod
     def getAllPersonas( filterCI:str=None ) -> List[Dict[str,Any]]:

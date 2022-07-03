@@ -13,8 +13,8 @@ angel = Users(login="angel",password=Encrypt.encrypt("angel"), name="Angel", sur
 
 admin = Groups(group="admin")
 analist = Groups(group="analist")
-cosecha1 = Cosecha(start_date=date(2022,3,1),end_date=date(2022,12,1))
-cosecha2 = Cosecha(start_date=date(2022,6,1),end_date=date(2022,8,1))
+cosecha1 = Cosecha(start_date=date(2022,3,1),end_date=date(2022,12,1),ID=1, description="a", is_enabled=True)
+cosecha2 = Cosecha(start_date=date(2022,6,1),end_date=date(2022,8,1),ID=2, description="a", is_enabled=True)
 admin_user.group_user.append(admin)
 dan.group_user.append(analist)
 dan.cosecha_user.append(cosecha1)
@@ -66,7 +66,7 @@ class SearchTestCases(unittest.TestCase):
     def testSearchTOP(self):
         """Test case for searching a Type of producer in the db."""
         # Add a type of producer
-        ans = AdminAPI.addTypeOfProducer( {'ID':2000, 'description':'productor2000' } ,[])
+        ans = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':2000, 'description':'productor2000' } ,[])
         assert( ans==0 )
 
         lista = AdminAPI.getAllTypeOfProducers( 'productor2000' )
@@ -85,7 +85,7 @@ class SearchTestCases(unittest.TestCase):
         # Add a type of producer
         for i in range(2001,2010):
             descriptionName = 'productor'+str(i)
-            ans = AdminAPI.addTypeOfProducer( {'ID':i, 'description':descriptionName } ,[])
+            ans = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':i, 'description':descriptionName } ,[])
             assert( ans==0 )
 
         lista = AdminAPI.getAllTypeOfProducers()
@@ -96,7 +96,7 @@ class SearchTestCases(unittest.TestCase):
     def testSearchPerson(self):
         """Test case for searching a Person in the db."""
         # Add a type of producer
-        ans2 = AdminAPI.addTypeOfProducer( {'ID':777, 'description':'productor777' } ,[])
+        ans2 = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':777, 'description':'productor777' } ,[])
         assert( ans2==0 )
         
         # Add person
@@ -158,12 +158,12 @@ class InsertionTestCases(unittest.TestCase):
 
     def testAddTOP(self):
         """Test case for adding a TypeOfProducer that should be acepted by the API"""
-        ans = AdminAPI.addTypeOfProducer( {'ID':1, 'description':'productor2' } ,[])
+        ans = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':1, 'description':'productor2' } ,[])
         assert( ans==0 )
     
     def testAddTOPwithRepeadDescription(self):
         """Test case for adding a TypeOfProducer that should be acepted by the API"""
-        ans = AdminAPI.addTypeOfProducer( {'ID':2, 'description':'productor2' } ,[])
+        ans = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':2, 'description':'productor2' } ,[])
         assert( ans==1 )
         
     def testAdd100TOP(self):
@@ -171,14 +171,14 @@ class InsertionTestCases(unittest.TestCase):
 
         for i in range(5,100):
             s = 'productor'+str(i)
-            ans = AdminAPI.addTypeOfProducer( {'ID':i, 'description':s } ,[])
+            ans = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':i, 'description':s } ,[])
             assert( ans==0 )
         
     # All cases for adding a Producer
 
     def testAddPerson(self):
         """Test case for adding a Person that should be acepted by the API"""
-        ans2 = AdminAPI.addTypeOfProducer( {'ID':2, 'description':'productor1' } ,[])
+        ans2 = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':2, 'description':'productor1' } ,[])
         assert( ans2==0 )
         
         d = {}
@@ -442,7 +442,7 @@ class DeletionTestCases(unittest.TestCase):
 
     def testDeleteTOP(self):
         """Test case for delete a TypeOfProducer that should be acepted by the API"""
-        ans = AdminAPI.addTypeOfProducer( {'ID':1, 'description':'productor2' } ,[])
+        ans = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':1, 'description':'productor2' } ,[])
         assert( ans==0 )
     
         ans = AdminAPI.deleteTypeOfProducer( 'productor2' )
@@ -458,7 +458,7 @@ class DeletionTestCases(unittest.TestCase):
 
         for i in range(5,100):
             s = 'productor'+str(i)
-            ans = AdminAPI.addTypeOfProducer( {'ID':i, 'description':s } ,[])
+            ans = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':i, 'description':s } ,[])
             assert( ans==0 )
         
         for i in range(5,100):
@@ -470,7 +470,7 @@ class DeletionTestCases(unittest.TestCase):
 
     def testDeletePerson(self):
         """Test case for delete a Person that should be acepted by the API"""
-        ans = AdminAPI.addTypeOfProducer( {'ID':666, 'description':'productor666' } ,[])
+        ans = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':666, 'description':'productor666' } ,[])
         assert( ans==0 )
         
         d = {}
@@ -496,7 +496,7 @@ class DeletionTestCases(unittest.TestCase):
     
     def testDelete100Person(self):
         """Test case for delete 100 Persons"""
-        ans = AdminAPI.addTypeOfProducer( {'ID':999, 'description':'productor999' } ,[])
+        ans = AdminAPI.addTypeOfProducer( {'precio':1, 'ID':999, 'description':'productor999' } ,[])
         assert( ans==0 )
         
         for i in range(1000,1100):
