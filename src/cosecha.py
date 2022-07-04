@@ -6,7 +6,6 @@ from init import ActiveApp
 from src.validators import check_privileges
 from src.PORM import CosechaViewAPI, mkForm
 from src.forms import AddCosechaForm, ModifyCosechaForm
-
 cosecha= Blueprint('cosecha', __name__,template_folder='templates',static_folder='static')
 
 
@@ -26,11 +25,15 @@ def addCosecha():
 @check_privileges(['admin'])
 def modifyCosecha():
     form = ModifyCosechaForm(request.form)
+
+    if(request.form['redirect']):
+        return redirect(url_for('compras.data_compras',cosechaID=form.ID.data))
+
     if form.validate_on_submit():
         form.commit(request.form['action'])
 
     return redirect(url_for('cosecha.cosechaControl'))
-
+    return redirect(url_for('compras.cosechaControl'))
 
 
 def buildPageArgs(request : Request):
@@ -63,7 +66,6 @@ def cosechaControl():
             except:
                 pass 
         is_enabled = c['is_enabled']
-        print(is_enabled)
         enabled.append(is_enabled)
         if not is_enabled:
             _fields = {}
@@ -88,14 +90,8 @@ def cosechaControl():
     addCosechaForm = AddCosechaForm(request.form)
     zs = list(zip(fs,forms,enabled))
 
-    
-    
-    #print(zs)
-    #for (f,_) in zs:
-    #    print(f)
-
-    
-
+    print(f"fs:{fs[0][0].data}")
+    print(f"forms:{forms}")
 
     return render_template('cosechasT.html',
         forms=zs,

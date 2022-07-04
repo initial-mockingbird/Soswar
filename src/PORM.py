@@ -8,10 +8,18 @@ from sqlalchemy.orm import relationship, backref
 from src.DB_Model import Cosecha, Encrypt, Persona, Users, Groups, group_user, TipoProductor, Compra
 from src.DB_Model import productor
 from init import ActiveApp
-from pymaybe import maybe
+from pymaybe import maybe,Maybe,Something
 from datetime import date, MINYEAR, MAXYEAR
 import re
 from flask_wtf import FlaskForm
+
+
+setattr(Maybe,'fmap',lambda _1,_2: maybe(None))
+setattr(Something,'fmap',lambda self,f: maybe(f(self.get())))
+setattr(Maybe,'and_then',lambda _1,_2: maybe(None))
+setattr(Something,'and_then',lambda self,f: f(self.get()))
+
+
 
 def loadFakeData(): 
     # Load in the DB an admin
@@ -195,6 +203,11 @@ class UserViewAPI():
             else:
                 return []
 
+
+        @staticmethod
+        def parseCosecha(description : str | None) -> List[Cosecha]:
+            return maybe(CosechaControlAPI.Data.lookupCosechaD(description)).fmap(lambda x: [x]).or_else([])
+
         @staticmethod
         def parseDate(dt : str |None) -> List[Cosecha]:
             if dt is None or dt == "":
@@ -260,6 +273,10 @@ class CosechaControlAPI():
             if isinstance(ID,str):
                 ID = int(ID)
             return Cosecha.query.filter_by(ID=ID).first()
+
+        @staticmethod
+        def lookupCosechaD(description : Union[str,None]) -> Optional[Cosecha]:
+            return Cosecha.query.filter_by(description=description).first()
 
         @staticmethod
         def cosechasInRange(begin : Optional[date] = None,end : Optional[date] = None):

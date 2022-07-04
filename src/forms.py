@@ -7,7 +7,7 @@ import re
 from src.PORM import CosechaControlAPI, UserControlAPI, UserViewAPI
 from init import ActiveApp
 from datetime import date 
-
+from flask import flash 
 '''
 def validate_login(form, field):
     if (Users.query.filter_by(login = field.data).first() is not None):
@@ -16,47 +16,6 @@ def validate_login(form, field):
         form.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
         raise ValidationError("El usuario pertenece ya al sistema.")
 '''
-
-class L(object):
-    """
-    Validates the length of a string.
-
-    :param min:
-        The minimum required length of the string. If not provided, minimum
-        length will not be checked.
-    :param max:
-        The maximum length of the string. If not provided, maximum length
-        will not be checked.
-    :param message:
-        Error message to raise in case of a validation error. Can be
-        interpolated using `%(min)d` and `%(max)d` if desired. Useful defaults
-        are provided depending on the existence of min and max.
-    """
-    def __init__(self, min=-1, max=-1, message=None):
-        assert min != -1 or max != -1, 'At least one of `min` or `max` must be specified.'
-        assert max == -1 or min <= max, '`min` cannot be more than `max`.'
-        self.min = min
-        self.max = max
-        self.message = message
-
-    def __call__(self, form, field):
-        l = field.data and len(field.data) or 0
-        if l < self.min or self.max != -1 and l > self.max:
-            message = self.message
-            if message is None:
-                if self.max == -1:
-                    message = field.ngettext('Field must be at least %(min)d character long.',
-                                             'Field must be at least %(min)d characters long.', self.min)
-                elif self.min == -1:
-                    message = field.ngettext('Field cannot be longer than %(max)d character.',
-                                             'Field cannot be longer than %(max)d characters.', self.max)
-                elif self.min == self.max:
-                    message = field.ngettext('Field must be exactly %(max)d character long.',
-                                             'Field must be exactly %(max)d characters long.', self.max)
-                else:
-                    message = field.gettext('Field must be between %(min)d and %(max)d characters long.')
-
-            raise ValidationError(message % dict(min=self.min, max=self.max, length=l))
 
 
 class AddUserForm(FlaskForm):
@@ -69,9 +28,9 @@ class AddUserForm(FlaskForm):
 
     def validate_login(self,field):
         if (Users.query.filter_by(login = field.data).first() is not None):
-            print(">:(")
-            self.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
-            raise ValidationError("El usuario pertenece ya al sistema.")
+            #self.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
+            flash("El usuario pertenece ya al sistema.",'redMessage')
+            raise StopValidation("El usuario pertenece ya al sistema.")
 
     def commit(self):
         login     = self.login.data
@@ -108,7 +67,7 @@ class ModifyUserForm(FlaskForm):
             name    = UserViewAPI.Parse.parseName(self.name.data)
             surname = UserViewAPI.Parse.parseSurname(self.surname.data)
             group   = UserViewAPI.Parse.parseGroup(self.group_user.data)
-            cosecha = UserViewAPI.Parse.parseDate(self.cosecha_user.data)
+            cosecha = UserViewAPI.Parse.parseCosecha(self.cosecha_user.data)
 
             setattr(user,'name',name)
             setattr(user,'surname',surname)
@@ -169,14 +128,17 @@ class ModifyCosechaForm(FlaskForm):
 
 def validate_CI(form, field):
     if(Persona.query.filter_by(CI = field.data).first() is not None):
+        flash("La CI ya esta en el sistema.","redMessage")
         raise ValidationError("La CI ya esta en el sistema.")
 
     if re.search("[V,J,E](-\d)",field.data)==None:
+        flash("Formato erroneo de cedula, debe ser: V-22222.","redMessage")
         raise ValidationError("Formato erroneo de cedula, debe ser: V-22222.")
     
 def validate_phone(form,field):
     if re.search("\d{4}(-\d{7})", field.data)==None:
-        raise ValidationError("El numero no cumple el formado ddd-ddddddd.")
+        flash("El numero no cumple el formado ddd-ddddddd.","redMessage")
+        raise ValidationError("El numero no cumple el formado dddd-ddddddd.")
 
 class AddProducerForm(FlaskForm):
     CI                  = StringField('Cedula', validators=[InputRequired(),validate_CI],description="No debe existir, Obligatorio*")
@@ -190,6 +152,7 @@ class AddProducerForm(FlaskForm):
 
 def validate_Description(form, field):
     if (TipoProductor.query.filter_by(description = field.data).first() is not None):
+        flash("El usuario pertenece ya al sistema.","redMessage")
         raise ValidationError("El usuario pertenece ya al sistema.")
 
 class AddTypeOfProducer(FlaskForm):
@@ -199,10 +162,12 @@ class AddTypeOfProducer(FlaskForm):
 
 def validate_CI_Buy(form, field):
     if re.search("[V,J,E](-\d)",field.data)==None:
+        flash("Formato erroneo de cedula, debe ser: V-22222.","redMessage")
         raise ValidationError("Formato erroneo de cedula, debe ser: V-22222.")
 
 def valid_ID_buy(form, field):
     if(Compra.query.filter_by(ID = field.data).first() is not None):
+        flash("El ID ya esta en el sistema.","redMessage")
         raise ValidationError("El ID ya esta en el sistema.")
 
 class AddBuy(FlaskForm): 

@@ -2,7 +2,9 @@
 {% extends 'gridTemplate.html' %}
 
 {% block head %}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
     <link rel="stylesheet" href="{{url_for('static',filename='css/productors.css')}}">
+    
 {% endblock %}
 
 {% block menu %}
@@ -29,9 +31,10 @@
     <div class="mainTitleBox"> Datos de productores </div>
 
     <div style="width: 100%; margin-top: 2em;">
+        <!--
         <div class="redMessage"> {{redMessage}} </div> 
         <div class="greenMessage"> {{greenMessage}} </div> 
-
+        -->
         <form action="/dataProducers" method="GET" style="display: flex; float: right;">
             {{ form.hidden_tag() }}
             {{ form.csrf_token }}

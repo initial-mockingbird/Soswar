@@ -2,7 +2,8 @@
 {% extends 'gridTemplate.html' %}
 
 {% block menu %}
-<h3 class="menuBox" style="border: 1px solid rgb(56,93,138);text-align: left;padding-left: 1em;font-size: 1em;">Perfiles de usuario</h3>
+    <div class="menuLinkBox"><a class="currentPage" href="/control">Perfiles de usuario</a></div>
+    <div class="menuLinkBox"><a class="otherPage" href="/cosechas">Cosechas</a></div>
 {% endblock %}
 
 {% block main %}
@@ -45,8 +46,6 @@
             {% endfor %}
         </div>
         
-
-        
         {% for (form,aux,enabled) in forms %}
             <form style="display:flex;"action="{{ url_for('cosecha.modifyCosecha') }}" method="post">
                 {{ aux.hidden_tag() }}
@@ -88,6 +87,15 @@
                         </g>
                     </svg>
                 </button>
+
+                <button class="iconBoxEdit" type="submit" name="redirect" value="form[0].data">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="18.5" viewBox="0 0 980.000000 980.000000" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd">
+                        <g transform="translate(0.000000,980.000000) scale(0.100000,-0.100000)" fill="white" stroke="none">
+                            <path d="m9 2 4 3-4 3 0-6"/>
+                        </g>
+                    </svg>
+                </button>
+
             </form>
         {% endfor %} 
     </div>

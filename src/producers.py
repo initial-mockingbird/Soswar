@@ -20,10 +20,10 @@ def data_producers():
     filterByCI = None if filterByCI=="" else filterByCI
 
     redMessage:str= request.args.get('redMessage', None)
-    redMessage = "" if redMessage==None else redMessage
+    #redMessage = "" if redMessage==None else redMessage
 
     greenMessage:str= request.args.get('greenMessage', None)
-    greenMessage = "" if greenMessage==None else greenMessage
+    #greenMessage = "" if greenMessage==None else greenMessage
 
     # Name of each column in the grid
     columnName = [ 'Cedula:', 'Apellidos:', 'Nombres:', 'Telefono local:', 'Celular:', 'Tipo-recolector:', 'Direccion 1:', 'Direccion 2:' ]
@@ -40,6 +40,8 @@ def data_producers():
     addUserForm = AddProducerForm(request.form)
     addUserBool = request.args.get('addProductor', None)
 
+    flash(redMessage,'redMessage')
+    flash(greenMessage,'greenMessage')
     return render_template(
         'mainArea.html', 
         htmlFile='dataProductors.html', 
@@ -49,8 +51,8 @@ def data_producers():
         columnId=columnId, 
         producersList=producersList, 
         typesOfProducers=typesOfProducers, 
-        redMessage=redMessage, 
-        greenMessage=greenMessage,
+        #redMessage=redMessage, 
+        #greenMessage=greenMessage,
         # Parameters for the FORM
         addUserForm=addUserForm,
         url='producers.addProducers',
@@ -65,10 +67,10 @@ def type_of_data_producers():
     filterByDescription = None if filterByDescription=="" else filterByDescription
 
     redMessage:str= request.args.get('redMessage', None)
-    redMessage = "" if redMessage==None else redMessage
+    #redMessage = "" if redMessage==None else redMessage
 
     greenMessage:str= request.args.get('greenMessage', None)
-    greenMessage = "" if greenMessage==None else greenMessage
+    #greenMessage = "" if greenMessage==None else greenMessage
     
     # Name of each column in the grid
     columnName = [ 'ID:', 'Descripcion:', 'precio' ]
@@ -83,16 +85,18 @@ def type_of_data_producers():
     addUserForm = AddTypeOfProducer(request.form)
     addUserBool = request.args.get('addProductor', None)
 
+    flash(redMessage,'redMessage')
+    flash(greenMessage,'greenMessage')
     return render_template(
         'mainArea.html', 
         htmlFile='producers.html', 
-        cssFile=['css/producers.css', 'css/profiles.css'], 
+        cssFile=['css/main.css','css/producers.css', 'css/profiles.css'], 
         columnName=columnName, 
         columnWidth=columnWidth, 
         columnId=columnId, 
         typesOfProducers=typesOfProducers, 
-        redMessage=redMessage, 
-        greenMessage=greenMessage,
+        #redMessage=redMessage, 
+        #greenMessage=greenMessage,
         # Parameters for the FORM
         addUserForm=addUserForm,
         url='producers.addTypeOfProducer',
@@ -173,7 +177,6 @@ def addTypeOfProducer():
         for err in errorMessages:
             if msg=="":
                 msg += err
-
     return redirect( url_for('producers.type_of_data_producers', redMessage=msg) )
 
 

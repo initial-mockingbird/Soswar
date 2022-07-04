@@ -66,6 +66,7 @@
     color: black;
     font-family: sans-serif;
     text-align: center;
+    cursor: pointer;
 }
 
 .menuTittle{
@@ -149,35 +150,104 @@ a.otherPage:hover {text-decoration: underline;}
     font-weight: bold;
 }
 
-.error{
+.blueMessage, .greenMessage, .yellowMessage, .redMessage, .validation {
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    border: 1px solid;
     position:fixed;
     z-index: 1000;
-    margin-left: 45%;
+    margin-left: 50%;
+    margin-right: 50%;
     margin-top: 2em;
     font-weight: bold;
-    max-height: 5em;
-    background-color: rgb(217,79,79);
-    color:white;
     padding: 1em;
-    -moz-animation: fade-out 5s;
+    padding-left: 3em;
+    -moz-animation: fade-out 10s;
     /* Firefox */
-    -webkit-animation: fade-out 5s;
+    -webkit-animation: fade-out 10s;
     /* Safari and Chrome */
-    -o-animation: fade-out 5s;
+    -o-animation: fade-out 10s;
     /* Opera */
-    animation: fade-out 5s;
+    animation: fade-out 10s;
     animation-fill-mode: forwards;
+    width: auto;
+    height: auto;
+}
+
+.blueMessage{
+    color: #00529B;
+	background-color: #BDE5F8;
+	background-image: url('../imgs/info.png');
+}
+
+.greenMessage{
+    color: #4F8A10;
+	background-color: #DFF2BF;
+	background-image: url('../imgs/success.png');
+}
+
+.yellowMessage{
+    color: #9F6000;
+	background-color: #FEEFB3;
+	background-image: url('../imgs/warning.png');
+}
+
+.redMessage{
+    color: #D8000C;
+	background-color: #FFBABA;
+	background-image: url('../imgs/error.png');
 }
 
 @keyframes fade-out {
-    0%   { opacity: 1;}
-    70%  { opacity: 1;}
+    0%   { 
+        opacity: 1;
+        width: auto;
+        height: auto;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    50%   { 
+        opacity: 1;
+        width: auto;
+        height: auto;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    99%  { 
+        opacity: 0.001;
+        width: auto;
+        height: auto;
+        padding: 1em;
+        padding-left: 3em;
+    }
     100% { opacity: 0;width: 0; height: 0; padding: 0;  visibility: hidden;}
 } 
 
 @-webkit-keyframes fade-out {
-    0%   { opacity: 1;}
-    70%  { opacity: 1;}
+    0%   { 
+        opacity: 1;
+        width: 10em;
+        min-height: 3em;
+        max-height: 7em;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    50%   { 
+        opacity: 1;
+        width: 10em;
+        min-height: 3em;
+        max-height: 7em;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    99%  { 
+        opacity: 0.001;
+        width: 10em;
+        min-height: 3em;
+        max-height: 7em;
+        padding: 1em;
+        padding-left: 3em;
+    }
     100% { opacity: 0;width: 0; height: 0; padding: 0;  visibility: hidden;}
 } 
 .mainTitleBoxDark{

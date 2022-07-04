@@ -107,7 +107,7 @@ class Cosecha(ActiveApp.getDB().Model):
     start_date   = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
     end_date     = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
     ID           = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,primary_key=True)
-    description  = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    description  = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False,unique=True)
     cosecha_user = ActiveApp.getDB().relationship("Users",secondary=cosecha_user,lazy="subquery",back_populates="cosecha_user")
     is_enabled   = ActiveApp.getDB().Column(ActiveApp.getDB().Boolean,nullable=False)
     compras      = ActiveApp.getDB().relationship("Compra")

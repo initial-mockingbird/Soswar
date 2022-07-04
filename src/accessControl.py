@@ -18,11 +18,9 @@ def addUser():
         return redirect(url_for('accessControl.access_control'))
     form = AddUserForm(request.form)
     if form.validate_on_submit():
-        flash("BIEN",'error')
-        print("SUBMITTED")
+        flash("Se ha añadido el usuario con exito",'greenMessage')
         form.commit()
-    print("MAL")
-    flash("ASD",'error')
+    
     return redirect(url_for('accessControl.access_control'))
 
 

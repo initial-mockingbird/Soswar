@@ -23,7 +23,7 @@ app.register_blueprint(cosecha)
 app.register_blueprint(compras)
 
 # Here we will save all the fake data for testing and develop 
-# loadFakeData()
+#loadFakeData()
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -31,9 +31,7 @@ def index():
     login    = request.cookies.get('login')
     user     = Users.query.filter_by(login=login).first()
     if (user is not None):
-        print("ACA")
         return redirect('/control')
-    print("NO ACA")
     return render_template('mainArea.html', htmlFile='login.html', cssFile=['css/main.css','css/login.css'],form=form)
     #return render_template('index.html',form=form)
 
