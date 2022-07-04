@@ -14,7 +14,7 @@ angel = Users(login="angel",password=Encrypt.encrypt("angel"), name="Angel", sur
 admin = Groups(group="admin")
 analist = Groups(group="analist")
 cosecha1 = Cosecha(start_date=date(2022,3,1),end_date=date(2022,12,1),ID=1, description="a", is_enabled=True)
-cosecha2 = Cosecha(start_date=date(2022,6,1),end_date=date(2022,8,1),ID=2, description="a", is_enabled=True)
+cosecha2 = Cosecha(start_date=date(2022,6,1),end_date=date(2022,8,1),ID=2, description="b", is_enabled=True)
 admin_user.group_user.append(admin)
 dan.group_user.append(analist)
 dan.cosecha_user.append(cosecha1)
@@ -22,8 +22,8 @@ dan.cosecha_user.append(cosecha2)
 
 ActiveApp.getDB().session.add(admin_user)
 ActiveApp.getDB().session.add(analist)
-ActiveApp.getDB().session.add(cosecha1)
-ActiveApp.getDB().session.add(cosecha2)
+#ActiveApp.getDB().session.add(cosecha1)
+#ActiveApp.getDB().session.add(cosecha2)
 ActiveApp.getDB().session.add(dan)
 ActiveApp.getDB().session.add(angel)
 ActiveApp.getDB().session.commit()
@@ -47,14 +47,14 @@ class SearchTestCases(unittest.TestCase):
     def testSearchUserMember(self):
         """Test case for searching a User that belongs in the db."""
 
-        user = AdminAPI.lookupUser(self.dan.login)
+        user = UserControlAPI.Data.lookupUser(self.dan.login)
         assert(user is not None)
         assert(user.login == self.dan.login)
 
     def testSearchUserNotMember(self):
         """Test case for searching a User that does NOT belongs in the db."""
         uniqueId : str = UniqueId.getUniqueId()
-        user  : Optional[Users] = AdminAPI.lookupUser(uniqueId)
+        user  : Optional[Users] = UserControlAPI.Data.lookupUser(uniqueId)
         assert(user is None)
 
     def testSearchGroupMember(self):

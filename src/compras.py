@@ -1,6 +1,6 @@
 from ast import Return
 from xmlrpc.client import boolean
-from flask import  url_for, make_response, redirect, Blueprint, request, abort, flash
+from flask import  url_for, make_response, redirect, Blueprint, request, abort, flash, Response
 import flask
 from numpy import integer, product
 from sqlalchemy import column
@@ -13,6 +13,7 @@ from src.validators import check_privileges
 from src.PORM import CosechaControlAPI, CompraControlAPI
 from datetime import date, MINYEAR, MAXYEAR, datetime
 from flask_weasyprint import HTML, render_pdf
+import csv
 
 # Auxiliar functions
 def getCosechaName( c:Cosecha ):
@@ -139,8 +140,8 @@ def compras_control():
 
 # Route for handle PDF 
 
-@compras.route('/comprasPDF/<cosechaID>/<fields>',methods=('GET', 'POST'))
-def compras_pdf( cosechaID:int, fields ):
+@compras.route('/comprasCSV/<cosechaID>/<fields>',methods=('GET', 'POST'))
+def compras_csv( cosechaID:int, fields ):
     currentCosecha = CosechaControlAPI().Data().lookupCosecha( cosechaID )
     compras = currentCosecha.compras 
 
@@ -164,3 +165,52 @@ def compras_pdf( cosechaID:int, fields ):
 
     html = render_template('comprasPDF.html', cosechaID=cosechaID, compras=compras, fields=fields)
     return render_pdf(HTML(string=html))
+
+
+@compras.route('/comprasPDF/<cosechaID>/<fields>',methods=('GET', 'POST'))
+def compras_pdf( cosechaID:int, fields ):
+
+    class StringWrapper():
+
+        def __init__(self) -> None:
+            self.st = ""
+
+        def write(self,text :str) -> None:
+            self.st += f"{text}"
+
+        def __repr__(self) -> str:
+            return self.st
+
+
+    currentCosecha = CosechaControlAPI().Data().lookupCosecha( cosechaID )
+    assert(isinstance(currentCosecha,Cosecha))
+    compras = currentCosecha.compras 
+
+    # Round fields
+    for c in compras:
+        c.addExtraAtt()
+        c.cantidad = round(c.cantidad,2)
+        c.merma = round(c.merma,2)
+        c.monto = round(c.monto,2)
+
+
+    # Define fileds of the PDF
+    fields = { 
+        'ID':{'label':'ID', 'width':40}, 
+        'date':{'label':'fecha', 'width':110}, 
+        'CI':{'label':'cedula', 'width':120},
+        'cantidad':{'label':'cantidad (kg)', 'width':120},
+        'merma':{'label':'merma (kg)', 'width':110},
+        'monto':{'label':'monto ($)', 'width':105}
+    }
+
+    pseudo_file = StringWrapper()
+    writer = csv.writer(pseudo_file, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    writer.writerow([k for k in fields])
+    writer.writerows(map(lambda x: [getattr(x,k) for k in fields] ,compras))
+
+    return Response(
+        str(pseudo_file),
+        mimetype="text/csv",
+        headers={"Content-disposition":
+                 f"attachment; filename={cosechaID}.csv"})

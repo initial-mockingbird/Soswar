@@ -269,7 +269,7 @@ class CosechaControlAPI():
     
     class Data():
         @staticmethod
-        def lookupCosecha(ID : Union[str,int,None]) -> Optional[Cosecha]:
+        def lookupCosecha(ID : Union[str,int,None]) -> Optional[Cosecha] | List[Cosecha]:
             if isinstance(ID,str):
                 ID = int(ID)
             return Cosecha.query.filter_by(ID=ID).first()
@@ -285,7 +285,7 @@ class CosechaControlAPI():
             if (end is None):
                 end = date(MAXYEAR,12,31)
 
-            return Cosecha.query.filter(Cosecha.start_date >= begin and Cosecha.end_date <= end).all() 
+            return Cosecha.query.filter(Cosecha.start_date >= begin, Cosecha.end_date <= end).all() 
 
         @staticmethod
         def cosechas(u : Union[str,Users,None] = None) -> List[Cosecha]:

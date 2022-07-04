@@ -37,9 +37,9 @@ class ActiveApp:
         
         # Different paths for each OS
         if platform == "linux" or platform == "linux2":
-            ActiveApp.__fp = f'{pathlib.Path().resolve()}/tmp/rest.db'
+            ActiveApp.__fp = f'{pathlib.Path().resolve()}/tmp/test.db'
         else:
-            ActiveApp.__fp = f'{pathlib.Path().resolve()}\\tmp\\rest.db'
+            ActiveApp.__fp = f'{pathlib.Path().resolve()}\\tmp\\test.db'
         
         ActiveApp.__app = Flask(__name__)
         ActiveApp.__app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{ActiveApp.__fp}'

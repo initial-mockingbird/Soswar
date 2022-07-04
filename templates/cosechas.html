@@ -59,6 +59,15 @@
                     {% set class = "disabledIconBoxEdit" %}
                     {% set mode = "disabled" %}
                 {% endif %}
+                
+                <button class={{class}} type="submit" name="redirect" value="form[0].data" {{mode}}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="18.5" viewBox="0 0 980.000000 980.000000" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd">
+                        <g transform="translate(0.000000,980.000000) scale(0.100000,-0.100000)" fill="white" stroke="none">
+                            <path d="m9 2 4 3-4 3 0-6"/>
+                        </g>
+                    </svg>
+                </button>
+
                 <button class={{class}} type="submit" name="action" value="Editar" {{mode}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="18.5" viewBox="0 0 980.000000 980.000000" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd">
                         <g transform="translate(0.000000,980.000000) scale(0.100000,-0.100000)" fill="white" stroke="none">
@@ -88,7 +97,7 @@
                     </svg>
                 </button>
 
-                <button class="iconBoxEdit" type="submit" name="redirect" value="form[0].data">
+                <button class="iconBoxEdit" type="submit" name="download" value="form[0].data">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="18.5" viewBox="0 0 980.000000 980.000000" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd">
                         <g transform="translate(0.000000,980.000000) scale(0.100000,-0.100000)" fill="white" stroke="none">
                             <path d="m9 2 4 3-4 3 0-6"/>
