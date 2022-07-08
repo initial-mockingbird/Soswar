@@ -8,29 +8,28 @@ from src.PORM import CosechaControlAPI, UserControlAPI, UserViewAPI
 from init import ActiveApp
 from datetime import date 
 from flask import flash 
-'''
-def validate_login(form, field):
-    if (Users.query.filter_by(login = field.data).first() is not None):
-        print(f"\n\n\nFIELD IS: {field}\n\n\n")
-        print(f"\n\n\nFIELD.DATA IS: {field.data}\n\n\n")
-        form.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
-        raise ValidationError("El usuario pertenece ya al sistema.")
-'''
 
+def validate_login(form,field):
+        if (Users.query.filter_by(login = field.data).first() is not None):
+            #self.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
+            flash("El usuario pertenece ya al sistema.",'redMessage')
+            raise StopValidation("El usuario pertenece ya al sistema.")
 
 class AddUserForm(FlaskForm):
-    login      = StringField('Login', validators=[InputRequired()],description="No debe existir, Obligatorio*")
+    login      = StringField('Login', validators=[InputRequired(),validate_login],description="No debe existir, Obligatorio*")
     password   = PasswordField('Password', validators=[InputRequired(),EqualTo('confirm',message="Los Passwords deben ser iguales.")])
     confirm    = PasswordField('Confirmar Password')
     nombres    = StringField('Nombres', validators=[InputRequired()],description="Obligatorio*")
     apellidos  = StringField('Apellidos', validators=[InputRequired()],description="Obligatorio*")
     groups     = SelectField('Grupos',choices=list(map(lambda g: g.group,Groups.query.all())) + [""] )
 
+    '''
     def validate_login(self,field):
         if (Users.query.filter_by(login = field.data).first() is not None):
             #self.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
             flash("El usuario pertenece ya al sistema.",'redMessage')
             raise StopValidation("El usuario pertenece ya al sistema.")
+    '''
 
     def commit(self):
         login     = self.login.data
@@ -76,11 +75,34 @@ class ModifyUserForm(FlaskForm):
         
         ActiveApp.getDB().session.commit()
 
+
+def validate_ID_cosecha(form,field):
+        if (CosechaControlAPI.Data.lookupCosecha(field.data) is not None):
+            #self.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
+            flash("El ID pertenece ya al sistema.",'redMessage')
+            raise StopValidation("El ID pertenece ya al sistema.")
+
+def validate_description_cosecha(form,field):
+        if (CosechaControlAPI.Data.lookupCosechaD(field.data) is not None):
+            #self.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
+            flash("La descripcion debe de ser unica.",'redMessage')
+            raise StopValidation("La descripcion debe de ser unica.")
+
+def validate_start_date(form,field):
+    if (field.data > form.end_date.data ):
+        flash("La fecha de inicio debe ser menor a la fecha final.",'redMessage')
+        raise StopValidation("La fecha de inicio debe ser menor a la fecha final.")
+
+def validate_end_date(form,field):
+    if (field.data < form.end_date.data ):
+        flash("La fecha de inicio debe ser menor a la fecha final.",'redMessage')
+        raise StopValidation("La fecha de inicio debe ser menor a la fecha final.")
+
 class AddCosechaForm(FlaskForm):
-    ID         = IntegerField('ID', validators=[InputRequired(),NumberRange(min=0)],description="No debe existir, no negativo, Obligatorio*")
-    description = StringField('Descripcion', validators=[InputRequired()])
-    start_date  = DateField('Inicio', validators=[InputRequired()],description="Obligatorio* YYYY-MM-DD")
-    end_date    = DateField('Cierre', validators=[InputRequired()],description="Obligatorio* YYYY-MM-DD")
+    ID         = IntegerField('ID', validators=[InputRequired(),NumberRange(min=0),validate_ID_cosecha],description="No debe existir, no negativo, Obligatorio*")
+    description = StringField('Descripcion', validators=[InputRequired(),validate_description_cosecha])
+    start_date  = DateField('Inicio', validators=[InputRequired(),validate_start_date],description="Obligatorio* YYYY-MM-DD")
+    end_date    = DateField('Cierre', validators=[InputRequired(),validate_end_date],description="Obligatorio* YYYY-MM-DD")
 
     def commit(self):
         ID : int | None         = self.ID.data
@@ -94,11 +116,18 @@ class AddCosechaForm(FlaskForm):
             is_enabled=True)
         CosechaControlAPI.Control.addCosecha(c)
 
+def validate_description_cosecha_(form,field):
+    a = CosechaControlAPI.Data.lookupCosechaD(field.data)
+    if (a is not None and a.ID != form.ID.data):
+        #self.login.errors += (ValidationError("El usuario pertenece ya al sistema."),)
+        flash("La descripcion debe de ser unica.",'redMessage')
+        raise StopValidation("La descripcion debe de ser unica.")
+
 class ModifyCosechaForm(FlaskForm):
     ID         = IntegerField('ID', validators=[InputRequired(),NumberRange(min=0)],description="No debe existir, no negativo, Obligatorio*")
-    description = StringField('Descripcion', validators=[InputRequired()])
-    start_date  = DateField('Inicio', validators=[InputRequired()],description="Obligatorio* YYYY-MM-DD")
-    end_date    = DateField('Cierre', validators=[InputRequired()],description="Obligatorio* YYYY-MM-DD")
+    description = StringField('Descripcion', validators=[InputRequired(),validate_description_cosecha_])
+    start_date  = DateField('Inicio', validators=[InputRequired(),validate_start_date],description="Obligatorio* YYYY-MM-DD")
+    end_date    = DateField('Cierre', validators=[InputRequired(),validate_end_date],description="Obligatorio* YYYY-MM-DD")
 
     def commit(self,mode : str):
         ID : int | None         = self.ID.data
@@ -132,8 +161,8 @@ def validate_CI(form, field):
         raise ValidationError("La CI ya esta en el sistema.")
 
     if re.search("[V,J,E](-\d)",field.data)==None:
-        flash("Formato erroneo de cedula, debe ser: V-22222.","redMessage")
-        raise ValidationError("Formato erroneo de cedula, debe ser: V-22222.")
+        flash("Formato erroneo de cedula, debe ser: V-222222.","redMessage")
+        raise ValidationError("Formato erroneo de cedula, debe ser: V-222222.")
     
 def validate_phone(form,field):
     if re.search("\d{4}(-\d{7})", field.data)==None:

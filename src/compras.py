@@ -135,7 +135,7 @@ def compras_control():
             flash( "Edicion exitosa!!", "greenMessage" )
         return redirect('/compras/'+cosechaID)
 
-    flash(msg,"redMessage")
+    #flash(msg,"redMessage")
     return redirect('/compras/'+cosechaID)
 
 # Route for handle PDF 

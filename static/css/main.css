@@ -156,8 +156,8 @@ a.otherPage:hover {text-decoration: underline;}
     border: 1px solid;
     position:fixed;
     z-index: 1000;
-    margin-left: 50%;
-    margin-right: 50%;
+    margin-left: 40%;
+    margin-right: 30%;
     margin-top: 2em;
     font-weight: bold;
     padding: 1em;
@@ -170,7 +170,7 @@ a.otherPage:hover {text-decoration: underline;}
     /* Opera */
     animation: fade-out 10s;
     animation-fill-mode: forwards;
-    width: auto;
+    width: 40%;
     height: auto;
 }
 
