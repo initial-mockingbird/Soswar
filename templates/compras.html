@@ -2,6 +2,9 @@
 {% extends 'gridTemplate.html' %}
 
 {% block menu %}
+    <div class="menuLinkBox"><a class="otherPage" href="/dataProducers">Datos del productores</a></div>
+    <div class="menuLinkBox"><a class="otherPage" href="/typeOfProducers">Tipos de recolectores</a></div>
+    <div class="menuLinkBox"><a class="otherPage" href="/cosechas">Portafolio de cosechas</a></div>
     <div class="menuLinkBox"><a class="currentPage" href="{{"/compras/"+cosechaID}}">Compras</a></div>
     <div class="menuLinkBox"><a class="otherPage" href="/cosechas">Cosechas</a></div>
 {% endblock %}
@@ -18,7 +21,7 @@
     , (addCompraForm.humedadPer,"stringBox")
     , (addCompraForm.mermaPer,"stringBox")
     , (addCompraForm.observaciones,"stringBox")
-    , (addCompraForm.recolector_ID,"stringBox")
+    , (addCompraForm.recolector_ID,"defaultBox")
     , (addCompraForm.cosecha_ID,"hideBox")
     , (addCompraForm.form_type,"hideBox")
     ],

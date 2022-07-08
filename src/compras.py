@@ -30,6 +30,7 @@ compras= Blueprint('compras', __name__,template_folder='templates',static_folder
 
 # Add a 
 @compras.route('/compras/<cosechaID>',methods=('GET', 'POST'))
+@check_privileges(['analist'])
 def data_compras( cosechaID : int ):
     # We get the data of the current cosecha (in invalid case => 404)
     currentCosecha = CosechaControlAPI().Data().lookupCosecha( cosechaID )
@@ -90,6 +91,7 @@ def data_compras( cosechaID : int ):
 # Routes in charge of the backend of the aplications
 
 @compras.route('/comprasControl',methods=('GET', 'POST'))
+@check_privileges(['analist'])
 def compras_control():
     # Boton de edicion
     if request.form['action'] == 'Editar':
@@ -141,6 +143,7 @@ def compras_control():
 # Route for handle PDF 
 
 @compras.route('/comprasCSV/<cosechaID>/<fields>',methods=('GET', 'POST'))
+@check_privileges(['analist'])
 def compras_csv( cosechaID:int, fields ):
     currentCosecha = CosechaControlAPI().Data().lookupCosecha( cosechaID )
     compras = currentCosecha.compras 
@@ -168,6 +171,7 @@ def compras_csv( cosechaID:int, fields ):
 
 
 @compras.route('/comprasPDF/<cosechaID>/<fields>',methods=('GET', 'POST'))
+@check_privileges(['analist'])
 def compras_pdf( cosechaID:int, fields ):
 
     class StringWrapper():

@@ -175,7 +175,7 @@ class AddProducerForm(FlaskForm):
     name                = StringField('Nombres', validators=[InputRequired()])
     localPhone          = StringField('Telefono local', validators=[InputRequired(),validate_phone])
     cellPhone           = StringField('Telefono celular', validators=[InputRequired(),validate_phone],description="Obligatorio*")
-    persona_productor   = SelectField('Tipo de productor', choices=list(map(lambda tp: tp.description,TipoProductor.query.all())) )
+    persona_productor   = SelectField('Tipo de recolector', choices=list(map(lambda tp: tp.description,TipoProductor.query.all())) )
     dir1                = StringField('Direccion 1', validators=[InputRequired()],description="Obligatorio*")
     dir2                = StringField('Direccion 2', validators=[InputRequired()],description="Obligatorio*")
 
@@ -183,9 +183,14 @@ def validate_Description(form, field):
     if (TipoProductor.query.filter_by(description = field.data).first() is not None):
         flash("El usuario pertenece ya al sistema.","redMessage")
         raise ValidationError("El usuario pertenece ya al sistema.")
+    
+def validate_ID_Type_Of_Porducer(form, field):
+    if (TipoProductor.query.filter_by(ID = field.data).first() is not None):
+        flash("Este ID ya esta en el sistema.","redMessage")
+        raise ValidationError("El usuario pertenece ya al sistema.") 
 
 class AddTypeOfProducer(FlaskForm):
-    ID          = StringField('ID', validators=[InputRequired()],description="No debe existir, Obligatorio*")
+    ID          = StringField('ID', validators=[InputRequired(),validate_ID_Type_Of_Porducer],description="No debe existir, Obligatorio*")
     description = StringField('description', validators=[InputRequired(),validate_Description])
     precio      = StringField('precio', validators=[InputRequired()],description="No debe existir, Obligatorio*")
 
@@ -204,12 +209,12 @@ class AddBuy(FlaskForm):
     date           = DateField('date', format='%Y-%m-%d', validators=[InputRequired()])
     CI             = StringField('CI', validators=[InputRequired(),validate_CI_Buy],description="No debe existir, Obligatorio*")
     precio         = IntegerField('precio', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
-    clase_cacao    = StringField('clase_cacao', validators=[InputRequired()],description="No debe existir, Obligatorio*")
-    cantidad       = IntegerField('cantidad', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
-    humedadPer     = IntegerField('humedadPer', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
-    mermaPer       = IntegerField('mermaPer', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    clase_cacao    = StringField('clase de cacao', validators=[InputRequired()],description="No debe existir, Obligatorio*")
+    cantidad       = IntegerField('cantidad (kg)', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    humedadPer     = IntegerField('Porcentaje de humedad', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    mermaPer       = IntegerField('Porcentaje de merma', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
     observaciones  = StringField('observaciones', validators=[InputRequired()],description="No debe existir, Obligatorio*")
-    recolector_ID  = IntegerField('recolector_ID', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
+    recolector_ID  = SelectField('Tipo de recolector', choices=list(map(lambda tp: tp.ID,TipoProductor.query.all())) )
     cosecha_ID     = IntegerField('cosecha_ID', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
     form_type      = StringField('form_type', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
 

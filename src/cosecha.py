@@ -22,7 +22,7 @@ def addCosecha():
 
 
 @cosecha.route('/modifyCosecha',  methods=('GET','POST'))
-@check_privileges(['admin'])
+@check_privileges(['admin','analist'])
 def modifyCosecha():
     form = ModifyCosechaForm(request.form)
 
@@ -49,7 +49,7 @@ def buildPageArgs(request : Request):
     
 
 @cosecha.route('/cosechas',  methods=('GET', 'POST'))
-@check_privileges(['admin'])
+@check_privileges(['admin', 'analist'])
 def cosechaControl():
     args                = buildPageArgs(request)
     Node                = args['AddCosecha']
