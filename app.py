@@ -12,6 +12,7 @@ from src.accessControl import accessControl
 from src.producers import data_producers, producers
 from src.cosecha import cosecha
 from src.compras import compras
+from src.logger import logger
 from datetime import date 
 from flask_wtf import FlaskForm
 
@@ -21,6 +22,7 @@ app.register_blueprint(accessControl)
 app.register_blueprint(producers)
 app.register_blueprint(cosecha)
 app.register_blueprint(compras)
+app.register_blueprint(logger)
 
 # Here we will save all the fake data for testing and develop 
 #loadFakeData()

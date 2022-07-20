@@ -4,7 +4,7 @@ from typing import Any, List
 from flask import redirect, render_template, Blueprint, request, url_for, Request
 from init import ActiveApp
 from src.validators import check_privileges
-from src.PORM import CosechaViewAPI, mkForm
+from src.PORM import CosechaViewAPI, UserControlAPI, mkForm
 from src.forms import AddCosechaForm, ModifyCosechaForm
 cosecha= Blueprint('cosecha', __name__,template_folder='templates',static_folder='static')
 
@@ -60,6 +60,7 @@ def cosechaControl():
     forms = []
     enabled = []
     for c in coupled:
+        print(c)
         form = ModifyCosechaForm(request.form)
         if args['SearchCosecha'] is not None and args['FilterByID'] is not None and args['FilterByID'] != "":
             aux = args['FilterByID'] 
@@ -80,7 +81,6 @@ def cosechaControl():
         
         c.pop('is_enabled')
         mkForm(fields,c,form)
-
         forms.append(form)
 
 
@@ -94,13 +94,16 @@ def cosechaControl():
     addCosechaForm = AddCosechaForm(request.form)
     zs = list(zip(fs,forms,enabled))
 
-    print(f"fs:{fs[0][0].data}")
-    print(f"forms:{forms}")
+    login    = request.cookies.get('login')
+    user = UserControlAPI.Data.lookupUser(login)
+    assert (user is not None)
+    b = any([g.group in ["admin"] for g in user.group_user])
 
     return render_template('cosechasT.html',
         forms=zs,
         fields=fields,
         over=Node,
         addCosechaForm=addCosechaForm,
+        isAdmin = b,
         url='cosecha.addCosecha')
 
