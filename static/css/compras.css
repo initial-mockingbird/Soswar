@@ -18,6 +18,15 @@
     display: inline-block;
 }
 
+.itemGrid2{
+    font-weight: bold;
+    margin: 0% 0.5px 0% 0%; 
+    padding: 4px;
+    background-color: #e9f1f5;
+    text-align:center; 
+    display: inline-block;
+}
+
 .gridContainer{
     /* Horizontal scroll */
     white-space: nowrap;
@@ -40,4 +49,20 @@
     background-color: #d0e3ea;
     width: 100px;
     text-align: center;
+}
+
+.box_sum_cantidad_total{
+    padding: 10px;
+    background-color: #d0e3ea;
+}
+
+.box_sum_monto{
+    padding: 10px;
+    background-color: #e9f1f5;
+}
+
+.container_sums{
+    display: flex; 
+    width: 100%;
+    margin-bottom: 7px;
 }

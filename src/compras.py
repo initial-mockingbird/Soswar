@@ -28,7 +28,7 @@ compras= Blueprint('compras', __name__,template_folder='templates',static_folder
 
 # Routes for the interface with their respective initializations
 
-# Add a 
+# Add a Buy
 @compras.route('/compras/<cosechaID>',methods=('GET', 'POST'))
 @check_privileges(['analist'])
 def data_compras( cosechaID : int ):
@@ -45,7 +45,7 @@ def data_compras( cosechaID : int ):
     if (filterByID is not None) and (filterByID!=""):
         compras = list(filter(lambda compra: str(compra.ID)==str(filterByID), compras) )
     for c in compras: c.addExtraAtt()
-
+    
     # Variables for the Form (addUser)
     addCompraForm = AddBuy(request.form)
     addUserBool = request.args.get('AddCompra', None) 
@@ -67,7 +67,8 @@ def data_compras( cosechaID : int ):
         addCompraForm.observaciones.default = compra.observaciones
         addCompraForm.cosecha_ID.default = compra.cosecha_ID
         addCompraForm.recolector_ID.default = compra.recolector_ID
-        addCompraForm.form_type.default = "Editar"
+        addCompraForm.is_green.default = compra.is_green
+        addCompraForm.form_type.default = "Editar"        
         addUserBool = True
 
     addCompraForm.process()
@@ -85,6 +86,46 @@ def data_compras( cosechaID : int ):
         addCompraForm=addCompraForm,
         url='compras.compras_control',
         over = addUserBool,
+        form = FlaskForm()
+    )
+
+# Show the list of buys
+@compras.route('/listarCompras/<cosechaID>',methods=('GET', 'POST'))
+@check_privileges(['analist','manager'])
+def data_lista_compras( cosechaID : int ):
+    # We get the data of the current cosecha (in invalid case => 404)
+    currentCosecha = CosechaControlAPI().Data().lookupCosecha( cosechaID )
+    if currentCosecha==None: abort(404)
+    cosechaName = getCosechaName( currentCosecha )
+
+    # Name of each column in the grid
+    fields = CompraControlAPI().Data().fieldsUI()
+    # List with all the buys
+    filterByID = request.args.get('filterByID', None)
+    compras = currentCosecha.compras 
+    if (filterByID is not None) and (filterByID!=""):
+        compras = list(filter(lambda compra: str(compra.ID)==str(filterByID), compras) )
+    
+    sum_cantidad_total = 0
+    sum_monto = 0
+    for c in compras: 
+        c.addExtraAtt()
+        c.round()
+        sum_cantidad_total += c.cantidad_total
+        sum_monto += c.monto
+
+    return render_template(
+        'mainArea.html', 
+        htmlFile='listarCompras.html', 
+        cssFile=['css/producers.css', 'css/profiles.css', 'css/compras.css'], 
+        cosechaName = cosechaName,
+        cosechaID = cosechaID,
+        # Table
+        fields = fields,
+        compras=compras,
+        sum_cantidad_total=sum_cantidad_total,
+        sum_monto=sum_monto,
+        # Parameters for the FORM
         form = FlaskForm()
     )
 
@@ -125,6 +166,8 @@ def compras_control():
         for field in CompraControlAPI().Data().pFields():
             if field=='date':
                 compraTemp[field]= datetime.strptime(request.form[field], '%Y-%m-%d')
+            elif field=='is_green':
+                compraTemp[field]= request.form[field]=='y'
             else:
                 compraTemp[field] = request.form[field]
 
@@ -218,3 +261,4 @@ def compras_pdf( cosechaID:int, fields ):
         mimetype="text/csv",
         headers={"Content-disposition":
                  f"attachment; filename={cosechaID}.csv"})
+
