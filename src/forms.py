@@ -1,6 +1,6 @@
 from datetime import date
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, DateField, IntegerField
+from wtforms import StringField, PasswordField, SelectField, DateField, IntegerField, BooleanField
 from wtforms.validators import DataRequired, EqualTo, StopValidation, InputRequired, NumberRange, ValidationError
 from src.DB_Model import Cosecha,Compra, Persona, TipoProductor, Users,Groups, Logger
 import re
@@ -252,6 +252,7 @@ class AddBuy(FlaskForm):
     mermaPer       = IntegerField('Porcentaje de merma', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
     observaciones  = StringField('observaciones', validators=[InputRequired()],description="No debe existir, Obligatorio*")
     recolector_ID  = SelectField('Tipo de recolector', choices=list(map(lambda tp: tp.ID,TipoProductor.query.all())) )
+    is_green          = BooleanField('La semilla esta verde ?', validators=[])
     cosecha_ID     = IntegerField('cosecha_ID', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
     form_type      = StringField('form_type', validators=[InputRequired()],description="No debe existir, no negativo, Obligatorio*")
 

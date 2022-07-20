@@ -135,15 +135,27 @@ class Compra(ActiveApp.getDB().Model):
     cantidad      = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
     humedadPer    = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
     mermaPer      = ActiveApp.getDB().Column(ActiveApp.getDB().Numeric,nullable=False)
-    observaciones   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    observaciones = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    is_green      = ActiveApp.getDB().Column(ActiveApp.getDB().Boolean,nullable=False)
 
     recolector_ID = ActiveApp.getDB().Column(ActiveApp.getDB().Integer,ForeignKey("tipo_productor.ID"))
     cosecha_ID    = ActiveApp.getDB().Column(ActiveApp.getDB().BigInteger,ForeignKey("cosecha.ID"))
 
     def addExtraAtt( self ):
+        if self.is_green:
+            self.mermaPer = 2*self.mermaPer
         self.merma = round(self.cantidad*(self.mermaPer/100),10)
         self.cantidad_total = round( self.cantidad - self.merma, 10 )
         self.monto = round( self.cantidad_total*self.precio, 10 )
+    
+    def round( self ):
+        self.precio = round(self.precio,2)
+        self.cantidad = round(self.cantidad,2)
+        self.humedadPer = round(self.humedadPer,2)
+        self.mermaPer = round(self.mermaPer,2)
+        self.merma = round(self.merma,2)
+        self.cantidad_total = round(self.cantidad_total,2)
+        self.monto = round(self.monto,2)
 
     def __repr__(self) -> str:
         return str(self.ID) + " " + self.CI + " " + str(self.precio)

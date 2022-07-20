@@ -61,6 +61,7 @@ def loadFakeData():
         'mermaPer' : 1.0,
         'observaciones' : 'xdddd',
         'cosecha_ID' : 1,
+        'is_green' : False
     } 
     ans = CompraControlAPI().Control().addCompra( Compra(**d1) ) 
 
@@ -76,6 +77,7 @@ def loadFakeData():
         'mermaPer' : 1.0,
         'observaciones' : 'xdddd',
         'cosecha_ID' : 1,
+        'is_green' : False
     } 
     ans = CompraControlAPI().Control().addCompra( Compra(**d1) ) 
 
@@ -505,12 +507,12 @@ class CompraControlAPI():
             fields['observaciones'] = {'valueType':str,'modifiable':True, 'label':'Cosecha'}
             fields['cosecha_ID']  = {'valueType':int, 'modifiable':True, 'label':'Cosecha'} 
             fields['recolector_ID'] = {'valueType':int,'modifiable':True,'label':'Cosecha'} 
+            fields['is_green']      = {'valueType':bool,'modifiable':True,'label':'Cosecha'} 
             return fields
         
         @staticmethod
         def fieldsUI () -> Dict[str,FieldInfo]:
             # The order imply the in the UI
-            columnWidth = [ 120, 150, 150, 150, 150, 200, 200, 200, 200, 200, 200, 200, 200, 200 ]
             fields = {}
             fields['ID']       = {'valueType':int,'modifiable':False,'label': 'ID', 'width':70}
             fields['date']     = {'valueType':date,'modifiable':True,'label':'Fecha', 'width':150}
@@ -526,8 +528,8 @@ class CompraControlAPI():
             fields['observaciones'] = {'valueType':str,'modifiable':True,'label':'observaciones', 'width':150}
             fields['cosecha_ID'] = {'valueType':int,'modifiable':True,'label':'Cosecha ID', 'width':150} 
             fields['recolector_ID'] = {'valueType':int,'modifiable':True,'label':'Recolector ID', 'width':150}
+            fields['is_green']      = {'valueType':bool,'modifiable':True,'label':'esta verde ?', 'width':150} 
             return fields
-        
 
         @staticmethod
         def lookupCompra( compraID:int=None ) -> List[Compra]|Compra:

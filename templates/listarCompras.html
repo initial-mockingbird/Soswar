@@ -5,49 +5,25 @@
     <div class="menuLinkBox"><a class="otherPage" href="/dataProducers">Datos del productores</a></div>
     <div class="menuLinkBox"><a class="otherPage" href="/typeOfProducers">Tipos de recolectores</a></div>
     <div class="menuLinkBox"><a class="otherPage" href="/cosechas">Portafolio de cosechas</a></div>
-    <div class="menuLinkBox"><a class="currentPage" href="{{"/compras/"+cosechaID}}">Compras</a></div>
+    <div class="menuLinkBox"><a class="currentPage" href="{{"/listarCompras/"+cosechaID}}">Compras</a></div>
     <div class="menuLinkBox"><a class="otherPage" href="/cosechas">Cosechas</a></div>
 {% endblock %}
 
 {% block main %}
-{% if over != None %}
-{{render_form_('Agregar compra',
-    [ (addCompraForm.ID,"stringBox")
-    , (addCompraForm.date,"defaultBox")
-    , (addCompraForm.CI,"stringBox")
-    , (addCompraForm.precio,"stringBox")
-    , (addCompraForm.clase_cacao,"stringBox")
-    , (addCompraForm.cantidad,"defaultBox")
-    , (addCompraForm.humedadPer,"stringBox")
-    , (addCompraForm.mermaPer,"stringBox")
-    , (addCompraForm.observaciones,"stringBox")
-    , (addCompraForm.recolector_ID,"defaultBox")
-    , (addCompraForm.is_green,"defaultBox")
-    , (addCompraForm.cosecha_ID,"hideBox")
-    , (addCompraForm.form_type,"hideBox")
-    ],
-    url,addCompraForm)}}
-{% endif %}
 
 <div style="margin: 2% 10% 0% 10%; clear: left;">
     <div class="mainTitleBoxDark"> Cosecha {{ cosechaName }} </div>
-    <div class="mainTitleBox"> Datos de compra </div>
+    <div class="mainTitleBox"> Listar compras </div>
 
     <div style="width: 100%; ">
 
         <div style="display: flex; justify-content: flex-end;">
 
-            <form style="display: flex;", action="{{url_for('compras.data_compras',cosechaID=cosechaID)}}", method="GET">
+            <form style="display: flex;", action="{{url_for('compras.data_lista_compras',cosechaID=cosechaID)}}", method="GET">
                 <input class="iconBox" type="text" name="filterByID" placeholder="Buscar por ID"  style="width:20em;   background-color: white;">
     
                 <button class="iconBox button" type="submit" name="SearchCompra" value="SearchCompra"  >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"><path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/></svg>
-                </button>
-            </form>
-    
-            <form action="{{url_for('compras.data_compras',cosechaID=cosechaID)}}", method="GET">
-                <button class="iconBox button" type="submit" name="AddCompra" value="AddCompra" >
-                    <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
                 </button>
             </form>
 
@@ -66,31 +42,32 @@
                 {{fields[k]['label']}} 
             </div>
             {% endfor %}
-            <p class="tittleGrid" style="width: 60px; color: #215968;">  a </p>
         </div>
 
         {% for compra in compras %}
         <form action="{{url_for('compras.compras_control',cosechaID=cosechaID)}}" method="POST" class="rowContainerDetails">
             {{ form.hidden_tag() }}
             {{ form.csrf_token }}
-    
+
+            {% set row = loop.index%2==0 %}
             {% for k in fields %}
-                <div class="itemGrid" style="width: {{fields[k]['width']}}px">
+                <div class={{'itemGrid2' if row else 'itemGrid'}} style="width: {{fields[k]['width']}}px">
                     {{compra[k]}} 
                 </div>
             {% endfor %}
-            <input id="oldID" name="oldID" value={{ compra['ID'] }} style="display: none;" >
-            <input id="cosechaID" name="cosechaID" value={{ cosechaID }} style="display: none;" >
-
-            <button class="iconBoxEditGrid" type="submit" name="action" value="Editar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="18.5" viewBox="0 0 980.000000 980.000000" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"> <g transform="translate(0.000000,980.000000) scale(0.100000,-0.100000)" fill="white" stroke="none"> <path d="M7624 9791 c-125 -20 -240 -75 -369 -176 -179 -139 -1015 -972 -1015 -1010 0 -41 2328 -2365 2368 -2365 22 0 866 849 967 973 140 170 179 251 211 437 29 168 5 352 -68 527 -68 165 -134 240 -742 849 -449 449 -596 584 -709 652 -66 40 -164 75 -268 96 -91 19 -304 28 -375 17z"/> <path d="M3602 5997 l-2403 -2403 279 -276 c153 -151 288 -280 299 -287 20 -10 86 52 820 778 439 434 1520 1512 2403 2395 l1605 1606 -295 295 c-162 162 -297 295 -300 295 -3 0 -1086 -1081 -2408 -2403z"/> <path d="M4315 5280 l-2400 -2400 483 -482 482 -483 2400 2400 c1320 1320 2400 2405 2400 2410 0 13 -942 955 -955 955 -6 0 -1090 -1080 -2410 -2400z"/> <path d="M5947 4743 c-1017 -1017 -2091 -2094 -2388 -2396 -503 -510 -539 -549 -528 -569 7 -12 136 -147 288 -300 l276 -279 2405 2406 2405 2406 -295 289 c-162 159 -299 290 -305 290 -5 0 -841 -831 -1858 -1847z"/> <path d="M1051 3083 c-115 -331 -431 -1323 -431 -1354 0 -35 1036 -1075 1098 -1102 14 -6 79 9 218 53 490 152 1289 413 1313 429 10 7 -248 272 -1035 1061 -577 579 -1061 1061 -1075 1071 l-27 19 -61 -177z"/> <path d="M482 1343 c-12 -22 -116 -312 -316 -873 -85 -239 -157 -443 -161 -452 -6 -14 14 -10 107 23 62 23 306 110 543 194 418 149 694 250 703 260 19 19 -768 812 -850 856 -13 7 -20 5 -26 -8z"/> </g> </svg>
-            </button>
-    
-            <button class="iconBoxEditGrid" type="submit" name="action" value="Eliminar"> 
-                <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="18.5" viewBox="0 0 980.000000 980.000000" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"> <g transform="translate(0.000000,980.000000) scale(0.100000,-0.100000)" fill="white" stroke="none"> <path d="M697 9102 l-697 -697 1745 -1745 c960 -960 1745 -1749 1745 -1755 0 -5 -785 -795 -1745 -1755 l-1745 -1745 700 -700 700 -700 1748 1748 1747 1747 1750 -1750 1750 -1750 702 702 703 703 -1750 1750 -1750 1750 1748 1748 1747 1747 -700 700 -700 700 -1747 -1748 -1748 -1747 -1748 1748 c-961 961 -1749 1747 -1752 1747 -3 0 -319 -314 -703 -698z"/> </g> </svg>
-            </button>
+            
         </form>
         {% endfor %}
+    </div>
+
+    <div class="container_sums">
+        <div class="box_sum_cantidad_total" style="width: 85%; margin-right: 0.5%;"> Cantidad Total de Kg Recolectados: </div>
+        <div class="box_sum_cantidad_total" style="width: 14.5%;"> {{ sum_cantidad_total }} </div>
+    </div>
+    
+    <div class="container_sums">
+        <div class="box_sum_monto" style="width: 85%; margin-right: 0.5%;"> Monto Total Invertido ($): </div>
+        <div class="box_sum_monto" style="width: 14.5%;"> {{ sum_monto }} </div>
     </div>
 
 </div>
