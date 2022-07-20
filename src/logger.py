@@ -87,6 +87,7 @@ def loggerControl():
             modulo=log.modulo,
             date=log.date,
             time=log.time,
+            description=log.description,
             user_login=log.user_login
             )
         
