@@ -94,6 +94,7 @@ class LoggerForm(FlaskForm):
         self.modulo.default = log.modulo
         self.date.default   = log.date
         self.time.default   = log.time
+        self.description.default = log.description
         self.user_login.default     = log.user_login
         self.process()
     @staticmethod
