@@ -2,9 +2,9 @@ from datetime import date
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, DateField, IntegerField, BooleanField
 from wtforms.validators import DataRequired, EqualTo, StopValidation, InputRequired, NumberRange, ValidationError
-from src.DB_Model import Cosecha,Compra, Persona, TipoProductor, Users,Groups
+from src.DB_Model import Cosecha,Compra, Persona, TipoProductor, Users,Groups, Logger
 import re
-from src.PORM import CosechaControlAPI, UserControlAPI, UserViewAPI
+from src.PORM import CosechaControlAPI, UserControlAPI, UserViewAPI, LoggerControlAPI, LoggerViewAPI
 from init import ActiveApp
 from datetime import date 
 from flask import flash 
@@ -44,6 +44,8 @@ class AddUserForm(FlaskForm):
             group_user=groups)
         UserControlAPI.Control.addUser(u)
 
+
+
     
 class ModifyUserForm(FlaskForm):
     login      = StringField('Login', validators=[InputRequired()],description="No debe existir, Obligatorio*",render_kw={'readonly':'readonly'})
@@ -75,6 +77,40 @@ class ModifyUserForm(FlaskForm):
         
         ActiveApp.getDB().session.commit()
 
+
+class LoggerForm(FlaskForm):
+    ID           = StringField('ID',render_kw={"disabled":"disabled"})
+    evento       = StringField('Evento',render_kw={"disabled":"disabled"})
+    modulo       = StringField('Modulo',render_kw={"disabled":"disabled"})
+    date         = StringField('Fecha',render_kw={"disabled":"disabled"})
+    time         = StringField('Hora',render_kw={"disabled":"disabled"})
+    description  = StringField('Descripcion',render_kw={"disabled":"disabled"})
+    user_login   = StringField('Usuario',render_kw={"disabled":"disabled"})
+
+    def fill_defaults(self,ID : int):
+        log : Logger = LoggerControlAPI.Data.lookupLog(ID)
+        self.ID.default     = str(log.ID)
+        self.evento.default = log.evento
+        self.modulo.default = log.modulo
+        self.date.default   = log.date
+        self.time.default   = log.time
+        self.user_login.default     = log.user_login
+        self.process()
+    @staticmethod
+    def info(ID : int):
+        log : Logger = LoggerControlAPI.Data.lookupLog(ID)
+        info = {}
+        info['ID'] = str(log.ID)
+        info['evento'] = log.evento
+        info['modulo'] = log.modulo
+        info['date']   = log.date
+        info['time']   = log.time
+        info['user_login']     = log.user_login
+        return info
+
+
+    def commit(self) -> None:
+        return 
 
 def validate_ID_cosecha(form,field):
         if (CosechaControlAPI.Data.lookupCosecha(field.data) is not None):

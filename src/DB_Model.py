@@ -114,8 +114,6 @@ class Cosecha(ActiveApp.getDB().Model):
     
 
     def __repr__(self) -> str:
-        #meses  = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
-        #return f'Cosecha {meses[self.start_date.month-1]} - {meses[self.end_date.month-1]} {self.end_date.year}'
         return f'{self.description}'
 
 
@@ -163,7 +161,27 @@ class Compra(ActiveApp.getDB().Model):
         return str(self.ID) + " " + self.CI + " " + str(self.precio)
 
 
+class Logger(ActiveApp.getDB().Model):
+    __tablename__ = "logger"
+
+    def __init__(self,**kwargs) -> None:
+        super().__init__()
+        for (k,v) in kwargs.items():
+            getattr(self,k)
+            setattr(self,k,v)
+        ActiveApp.getDB().session.commit()
+
+    ID           = ActiveApp.getDB().Column(ActiveApp.getDB().Integer,primary_key=True,autoincrement=True)
+    evento       = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    modulo       = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    date         = ActiveApp.getDB().Column(ActiveApp.getDB().Date,nullable=False)
+    time         = ActiveApp.getDB().Column(ActiveApp.getDB().Time,nullable=False)
+    description  = ActiveApp.getDB().Column(ActiveApp.getDB().Text,nullable=False)
+    user_login   = ActiveApp.getDB().Column(ActiveApp.getDB().Text,ForeignKey("users.login"))
     
+
+    def __repr__(self) -> str:
+        return f'{self.description}'
 
 
 

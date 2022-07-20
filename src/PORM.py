@@ -5,14 +5,16 @@ from typing import Any, Callable, Dict, List, Optional, Union, TypedDict
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import relationship, backref
-from src.DB_Model import Cosecha, Encrypt, Persona, Users, Groups, group_user, TipoProductor, Compra
+from src.DB_Model import Cosecha, Encrypt, Persona, Users, Groups, group_user, TipoProductor, Compra, Logger
 from src.DB_Model import productor
 from init import ActiveApp
 from pymaybe import maybe,Maybe,Something
 from datetime import date, MINYEAR, MAXYEAR
 import re
 from flask_wtf import FlaskForm
-
+import datetime as dt
+from flask import request
+from functools import wraps
 
 setattr(Maybe,'fmap',lambda _1,_2: maybe(None))
 setattr(Something,'fmap',lambda self,f: maybe(f(self.get())))
@@ -84,6 +86,90 @@ class FieldInfo(TypedDict):
     valueType : type
     modifiable : bool
 
+
+
+class LoggerControlAPI():
+
+    class Control():
+        @staticmethod
+        def addLog(log : Logger) -> None:
+            ActiveApp.getDB().session.add(log)
+            ActiveApp.getDB().session.commit()
+
+        @staticmethod
+        def deleteLog(log : Union[int,Logger]) -> None:
+            if (isinstance(log,int)):
+                Logger.query.filter_by(ID=log).delete()
+            else:
+                maybe(log).delete()
+            ActiveApp.getDB().session.commit()
+    
+    class Data():
+        @staticmethod
+        def lookupLog(log : Optional[int]) -> Optional[Users]:
+            if log is None:
+                return Logger.query.all()
+            return Logger.query.filter_by(ID=log).first()
+
+class LoggerViewAPI():
+    @staticmethod
+    def pFields() -> Dict[str,FieldInfo]:
+        fields = {}
+        fields['ID']           = {'valueType':str,'modifiable':False ,'label':'ID'}
+        fields['evento']       = {'valueType':str,'modifiable':False ,'label':'Evento'}
+        fields['modulo']       = {'valueType':str,'modifiable':False ,'label':'Modulo'}
+        fields['date']         = {'valueType':str,'modifiable':False ,'label':'Fecha'}
+        fields['time']         = {'valueType':str,'modifiable':False ,'label':'Hora'}
+        return fields
+    
+    @staticmethod
+    def loggerPublicInfo(ID : Optional[str] = None) -> Union[Dict[str,Any],List[Dict[str,Any]]]:
+        if (ID is not None):
+            ret  = {}
+            logger = LoggerControlAPI.Data.lookupLog(ID)
+            for field in LoggerViewAPI.pFields().keys():
+                ret[field] = getattr(logger,field)
+        else:
+            ret = []
+            loggers = Logger.query.all()
+            for logger in loggers:
+                loggerFields  = {}
+                for field in LoggerViewAPI.pFields().keys():
+                    loggerFields[field] = getattr(logger,field)
+                ret.append(loggerFields)
+
+        return ret
+
+def log_action_dec(evento : str, modulo : str, description : str):
+    def decorator(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            dts : dt.datetime = dt.datetime.now()
+            login    = request.cookies.get('login')
+            log : Logger = Logger(
+                evento=evento,
+                modulo=modulo,
+                date=dts.date(),
+                time=dts.time(),
+                description=description,
+                user_login=login
+                )
+            LoggerControlAPI.Control.addLog(log)
+            
+            return function(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def log_action_fun(evento : str, modulo : str, description : str) -> None:
+
+    @log_action_dec(evento,modulo,description)
+    def id () -> None:
+        print("LOGEE")
+        return 
+    
+    return id()
+
 class UserControlAPI():
 
     class Control():
@@ -91,15 +177,25 @@ class UserControlAPI():
         def addUser(user : Users) -> None:
             ActiveApp.getDB().session.add(user)
             ActiveApp.getDB().session.commit()
+            log_action_fun("Agregar Usuario","Usuario",f"Se agrega el usuario: {user.login}")
 
         @staticmethod
         def deleteUser(user : Union[str,Users]) -> None:
+            if isinstance(user,str):
+                l = user 
+            else:
+                l = user.login
+            
+            log_action_fun("Eliminar Usuario","Usuario",f"Se elimina el usuario: {l}")
+
             if (isinstance(user,str)):
                 Users.query.filter_by(login=user).delete()
             else:
-                maybe(user).delete()
+                ActiveApp.getDB().session.delete(user)
+            
             ActiveApp.getDB().session.commit()
-        
+
+            
         @staticmethod
         def addGroupToUser(group : Union[str,Groups], user : Union[str,Users]) -> None:
 
@@ -113,6 +209,10 @@ class UserControlAPI():
                 maybe(user).group_user.append(group)
             
             ActiveApp.getDB().session.commit()
+
+            if (group is not None and user is not None):
+                log_action_fun("Agregar Grupo a Usuario Usuario","Usuario",f"Se asocio el grupo: {group.group} al usuario: {user.login}")
+
         
         @staticmethod
         def addCosechaToUser(cosecha : Cosecha, user : Union[str,Users]) -> None:
@@ -121,6 +221,8 @@ class UserControlAPI():
 
             maybe(user).cosecha_user.append(cosecha)
             ActiveApp.getDB().session.commit()
+            if (user is not None):
+                log_action_fun("Agregar Cosecha a Usuario","Cosecha",f"Se asocio la cosecha: {cosecha.description} al usuario: {user.login}")
     
     class Data():
         @staticmethod
@@ -234,15 +336,22 @@ class GroupControlAPI():
         def addGroup(group : Groups) -> None:
             ActiveApp.getDB().session.add(group)
             ActiveApp.getDB().session.commit()
+            log_action_fun("Agregar Grupo","Usuario",f"Se agrego el grupo: {group.group}")
               
         @staticmethod
         def deleteGroup(group : Groups) -> None:
             group.delete()
             ActiveApp.getDB().session.commit()
-        
+            log_action_fun("Eliminar Grupo","Usuario",f"Se elimino el grupo: {group.group}")
+
         @staticmethod
         def addGroupToUser(group : Union[str,Groups], user : Union[str,Users]) -> None:
             UserControlAPI.Control.addGroupToUser(group,user)
+            if (isinstance(group,Groups)):
+                group = group.group
+            if (isinstance(user,Users)):
+                user = user.login
+            log_action_fun("Agregar Grupo a Usuario","Usuario",f"Se asocio el grupo: {group} al usuario: {user}")
             ActiveApp.getDB().session.commit()
     
     class Data():
@@ -259,11 +368,13 @@ class CosechaControlAPI():
         def addCosecha(cosecha : Cosecha) -> None:
             ActiveApp.getDB().session.add(cosecha)
             ActiveApp.getDB().session.commit()
+            log_action_fun("Agregar cosecha","Cosecha",f"Se agrego la cosecha {cosecha.description}")
         @staticmethod
         def deleteCosecha(cosecha : Cosecha) -> None:
             Cosecha.query.filter_by(ID=cosecha.ID).delete()
             #cosecha.delete()
             ActiveApp.getDB().session.commit()
+            log_action_fun("Eliminar cosecha","Cosecha",f"Se elimino la cosecha {cosecha.description}")
         
         @staticmethod
         def addCosechaToUser(cosecha : Cosecha, user : Union[str,Users]) -> None:
@@ -343,6 +454,7 @@ class CompraControlAPI():
             
             ActiveApp.getDB().session.add(c)
             ActiveApp.getDB().session.commit()
+            log_action_fun("Agregar compra","Compra",f"Se agrego la compra con ID: {c.ID}")
             return 0
 
         @staticmethod
@@ -354,6 +466,7 @@ class CompraControlAPI():
 
             p.delete() 
             ActiveApp.getDB().session.commit()
+            log_action_fun("Eliminar compra","Compra",f"Se elimino la compra con ID: {c.ID}")
             return 0
         
         @staticmethod
@@ -376,6 +489,7 @@ class CompraControlAPI():
             
             ActiveApp.getDB().session.add(c)
             ActiveApp.getDB().session.commit()
+            log_action_fun("Actualizar compra","Compra",f"Se actualizo la compra con ID: {c.ID}")
             return 0
 
     class Data():
@@ -425,6 +539,7 @@ class CompraControlAPI():
                 compras = Compra.query.filter_by(ID=compraID).first()
             return compras
             
+
 
 
 def mkForm(pfields : Dict[str, FieldInfo],pInfo,form : FlaskForm):
@@ -501,6 +616,7 @@ class AdminAPI():
 
         ActiveApp.getDB().session.add(p)
         ActiveApp.getDB().session.commit()
+        log_action_fun("Agregar Productor","Productor",f"Se agrega el productor: {p.name}, CI: {p.CI}")
         return 0
     
     @staticmethod
@@ -517,6 +633,7 @@ class AdminAPI():
 
         ActiveApp.getDB().session.add(tipo)
         ActiveApp.getDB().session.commit()
+        log_action_fun("Agregar Tipo Productor","Productor",f"Se agrega el tipo de productor: {tipo.description}")
         return 0
 
     # Delete functions
@@ -548,9 +665,10 @@ class AdminAPI():
         t = p.first().persona_productor[0].persona_productor
         filtered = filter(lambda p2: p2.CI!=ciPersona, t)
         p.first().persona_productor[0].persona_productor = list(filtered) 
-        
+        log_action_fun("Eliminar Persona","Productor",f"Se elimino al productor: {p.name}, CI: {p.CI}")
         p.delete()
         ActiveApp.getDB().session.commit()
+        
         return 0
 
     @staticmethod
@@ -563,6 +681,7 @@ class AdminAPI():
         for p in t.first().persona_productor:
             p.persona_productor = []
         
+        log_action_fun("Eliminar Tipo de productor","Productor",f"Se elimino al tipo de productor: {name}")
         t.delete()
         ActiveApp.getDB().session.commit()
         return 0
@@ -694,6 +813,8 @@ class AdminAPI():
             AdminAPI.addPerson( d )
         else:
             AdminAPI.addPerson( d, ciPersona )
+        
+        log_action_fun("Actualizar Productor","Productor",f"Se actualizo el productor con CI: {ciPersona}")
 
     @staticmethod
     def updTypeOfProducer( name : str, d : Dict[str,str]) -> None:
@@ -701,8 +822,11 @@ class AdminAPI():
         t = TipoProductor.query.filter_by(description=name)
         relations = t.first().persona_productor
 
+        log_action_fun("Actualizar Tipo de Productor","Productor",f"Se actualizo al tipo de productor: {name}")
+
         # Delete and add
         AdminAPI.deleteTypeOfProducer( name ) 
         AdminAPI.addTypeOfProducer( d, relations )
+
 
 
