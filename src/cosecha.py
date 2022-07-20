@@ -32,6 +32,9 @@ def modifyCosecha():
     if('download' in request.form):
         return redirect(url_for('compras.compras_pdf',cosechaID=form.ID.data,fields={}))
     
+    if('listar' in request.form):
+        return redirect(url_for('compras.data_lista_compras',cosechaID=form.ID.data,fields={}))
+    
 
     if form.validate_on_submit():
         form.commit(request.form['action'])

@@ -466,7 +466,7 @@ class CompraControlAPI():
 
             p.delete() 
             ActiveApp.getDB().session.commit()
-            log_action_fun("Eliminar compra","Compra",f"Se elimino la compra con ID: {c.ID}")
+            log_action_fun("Eliminar compra","Compra",f"Se elimino la compra con ID: {compraID}")
             return 0
         
         @staticmethod

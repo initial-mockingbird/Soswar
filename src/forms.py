@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField, SelectField, DateField, IntegerF
 from wtforms.validators import DataRequired, EqualTo, StopValidation, InputRequired, NumberRange, ValidationError
 from src.DB_Model import Cosecha,Compra, Persona, TipoProductor, Users,Groups, Logger
 import re
-from src.PORM import CosechaControlAPI, UserControlAPI, UserViewAPI, LoggerControlAPI, LoggerViewAPI
+from src.PORM import CosechaControlAPI, UserControlAPI, UserViewAPI, LoggerControlAPI, LoggerViewAPI, log_action_fun
 from init import ActiveApp
 from datetime import date 
 from flask import flash 
@@ -74,6 +74,7 @@ class ModifyUserForm(FlaskForm):
             setattr(user,'surname',surname)
             setattr(user,'group_user',group)
             setattr(user,'cosecha_user',cosecha)
+            log_action_fun("Modificar Usuario","Usuario",f"Se modifico el usuario: {login}")
         
         ActiveApp.getDB().session.commit()
 
@@ -183,11 +184,18 @@ class ModifyCosechaForm(FlaskForm):
             setattr(cosecha,'description',description)
             setattr(cosecha,'start_date',start_date)
             setattr(cosecha,'end_date',end_date)
+            log_action_fun("Modificar Cosecha","Cosecha",f"Se modifico la cosecha: {description}")
         elif mode == "Pause":
+            s = ""
+            if cosecha.is_enabled:
+                s = f'deshabilito'
+            else:
+                s = f'habilito'
+            log_action_fun("Modificar Cosecha","Cosecha",f"Se {s} la cosecha: {cosecha.description}")
             cosecha.is_enabled = not cosecha.is_enabled
         else:
             pass
-            
+        
         
         ActiveApp.getDB().session.commit()
 
