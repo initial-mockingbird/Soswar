@@ -106,7 +106,7 @@ class LoggerControlAPI():
     
     class Data():
         @staticmethod
-        def lookupLog(log : Optional[int]) -> Optional[Users]:
+        def lookupLog(log : Optional[int] = None) -> Optional[Users]:
             if log is None:
                 return Logger.query.all()
             return Logger.query.filter_by(ID=log).first()
@@ -340,7 +340,7 @@ class GroupControlAPI():
               
         @staticmethod
         def deleteGroup(group : Groups) -> None:
-            group.delete()
+            ActiveApp.getDB().session.delete(group)
             ActiveApp.getDB().session.commit()
             log_action_fun("Eliminar Grupo","Usuario",f"Se elimino el grupo: {group.group}")
 
