@@ -1,0 +1,34 @@
+<!doctype html>
+<title>PDF de compras                       </title>
+<link rel=stylesheet href="{{ url_for('static', filename='css/compras.css')}}">
+<link rel=stylesheet href="{{ url_for('static', filename='css/producers.css')}}">
+<link rel=stylesheet href="{{ url_for('static', filename='css/main.css')}}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+</head>
+
+<h1> Compras hechas a la cosecha {{cosechaID}} </h1>
+<div class="gridContainer" style="clear: both;">
+    <div class="rowContainerDetails">
+        {% for k in fields %}
+        <div class="tittleGrid" style="width: {{fields[k]['width']}}px">
+            {{fields[k]['label']}} 
+        </div>
+        {% endfor %}
+    </div>
+
+    {% for compra in compras %}
+    <div class="rowContainerDetails"> 
+        {% for k in fields %}
+            <div class="itemGrid" style="width: {{fields[k]['width']}}px">
+                {{compra[k]}} 
+            </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+

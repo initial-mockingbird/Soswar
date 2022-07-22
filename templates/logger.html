@@ -1,0 +1,78 @@
+{% from "formMacros.html" import render_mfield,render_form_ %}
+{% extends 'gridTemplate.html' %}
+
+{% block menu %}
+    <div class="menuLinkBox"><a class="otherPage" href="/control">Perfiles de usuario</a></div>
+    <div class="menuLinkBox"><a class="otherPage" href="/cosechas">Cosechas</a></div>
+    <div class="menuLinkBox"><a class="currentPage" href="/logs">Log</a></div>
+{% endblock %}
+
+{% block main %}
+{% if over != None %}
+{{render_form_('Detalles Del Log',
+    [ (loggerDetailsForm.ID,"stringBox")
+    , (loggerDetailsForm.evento,"stringBox")
+    , (loggerDetailsForm.modulo,"stringBox")
+    , (loggerDetailsForm.date,"stringBox")
+    , (loggerDetailsForm.time,"stringBox")
+    , (loggerDetailsForm.description,"stringBox")
+    , (loggerDetailsForm.user_login,"stringBox")
+    ],
+    url,loggerDetailsForm)}}
+{% endif %}
+<div style="margin-top: 2%; margin-left: 10%; margin-right: 10%;">
+    <div class="titleBox">
+        Logger de Eventos
+    </div>
+
+    <div style="display: flex; justify-content: flex-end;gap:10px">
+
+        <form style="display: flex; gap: 10px" action="{{ url_for('logger.loggerControl') }}", method="GET">
+            <input class="iconBox" type="text" name="FilterByID" placeholder="Buscar por ID"  style="width:20em;   background-color: white;">
+
+            <button class="iconBox button" type="submit" name="SearchLog" value="SearchLog"  >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd"><path d="M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5z"/></svg>
+            </button>
+        </form>
+
+    </div>
+
+    <div class="genericContainerBox" style="margin-top: 0.5em; overflow-y: auto; max-height: 65vh;">
+        <div style="display:flex;">
+            {% for field in fields %}
+                <div class="itemBox" style="text-align: center;">{{fields[field].label}}</div>
+            {% endfor %}
+        </div>
+        
+        {% for (form,aux) in forms %}
+            <div style="display:flex;">
+                <form style="display:flex;"action="{{ url_for('logger.loggerDetails') }}" method="post">
+                    {{ aux.hidden_tag() }}
+                    {% for f in form %}
+                        {{ f|safe }}
+                    {% endfor %}
+                </form>
+                <form style="display:flex;"action="{{ url_for('logger.loggerControl') }}" method="get">
+                    {{ aux.hidden_tag() }}
+                    <button class="iconBoxEdit" type="submit" name="Detalles" value="{{form[0].data}}">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="24.000000" height="24.000000" viewBox="0 0 736.000000 980.000000" preserveAspectRatio="xMidYMid meet"> <g transform="translate(0.000000,980.000000) scale(0.100000,-0.100000)" fill="#FFFFFF" stroke="none"> <path d="M2625 9789 c-148 -25 -337 -99 -467 -185 -55 -36 -288 -263 -966 -938 -526 -525 -919 -924 -954 -971 -73 -95 -157 -266 -193 -390 -16 -55 -30 -138 -36 -215 -7 -82 -9 -1221 -7 -3350 3 -3003 5 -3229 20 -3280 27 -87 83 -190 133 -248 89 -100 225 -178 353 -202 38 -7 1068 -10 3176 -10 2693 0 3130 2 3190 15 216 46 402 225 463 446 17 61 18 292 18 4439 0 4147 -1 4378 -18 4439 -61 221 -247 400 -463 446 -59 13 -362 15 -2134 14 -1136 -1 -2087 -5 -2115 -10z m4115 -4889 l0 -4290 -3060 0 -3060 0 0 3215 0 3214 813 3 c905 4 857 0 1001 75 89 47 199 154 249 244 21 36 46 101 57 144 19 75 20 111 20 882 l0 803 1990 0 1990 0 0 -4290z m-4590 3305 l0 -545 -547 0 -548 0 545 545 c300 300 546 545 547 545 2 0 3 -245 3 -545z"/>  <path d="M3578 7944 c-64 -20 -149 -99 -178 -166 -64 -148 2 -323 148 -395 l57 -28 995 0 c991 0 995 0 1041 21 67 31 114 78 149 146 54 110 38 243 -42 333 -22 25 -64 58 -92 73 l-51 27 -990 2 c-841 2 -997 0 -1037 -13z"/> <path d="M1734 6409 c-67 -25 -123 -75 -159 -140 -27 -49 -30 -63 -30 -144 0 -81 3 -95 30 -144 37 -66 92 -115 162 -141 53 -20 76 -20 1943 -20 1867 0 1890 0 1943 20 167 63 245 254 169 415 -31 64 -77 111 -145 147 l-42 23 -1910 2 c-1875 2 -1911 2 -1961 -18z"/> <path d="M1743 4882 c-67 -24 -118 -64 -154 -121 -40 -62 -52 -113 -47 -192 8 -109 67 -196 171 -251 l42 -23 1925 0 1925 0 50 27 c104 55 158 141 163 260 4 65 0 85 -20 130 -34 75 -79 122 -146 155 l-57 28 -1900 2 c-1804 2 -1903 2 -1952 -15z"/> <path d="M1760 3357 c-94 -26 -184 -114 -210 -207 -19 -69 -12 -150 19 -215 35 -73 78 -115 151 -149 l55 -26 1901 0 c2163 0 1957 -9 2055 89 66 66 89 124 89 221 0 117 -69 223 -179 274 l-46 21 -1895 2 c-1465 1 -1905 -1 -1940 -10z"/> <path d="M1777 1829 c-178 -42 -280 -229 -220 -405 22 -65 110 -153 178 -180 49 -18 101 -19 1900 -22 1256 -2 1872 1 1918 8 89 14 134 37 190 100 60 66 81 130 75 224 -8 118 -67 203 -177 255 l-56 26 -1885 2 c-1078 0 -1901 -3 -1923 -8z"/> </g> </svg>
+                    </button>
+                </form>
+                <form style="display:flex;"action="{{ url_for('logger.loggerDetails') }}" method="post">
+                    {{ aux.hidden_tag() }}
+                    <button class="iconBoxEdit" type="submit" name="Eliminar" value="{{form[0].data}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18.5" height="18.5" viewBox="0 0 980.000000 980.000000" style="fill:white;" fill-rule="evenodd" clip-rule="evenodd">
+                            <g transform="translate(0.000000,980.000000) scale(0.100000,-0.100000)" fill="white" stroke="none">
+                                <path d="M697 9102 l-697 -697 1745 -1745 c960 -960 1745 -1749 1745 -1755 0 -5 -785 -795 -1745 -1755 l-1745 -1745 700 -700 700 -700 1748 1748 1747 1747 1750 -1750 1750 -1750 702 702 703 703 -1750 1750 -1750 1750 1748 1748 1747 1747 -700 700 -700 700 -1747 -1748 -1748 -1747 -1748 1748 c-961 961 -1749 1747 -1752 1747 -3 0 -319 -314 -703 -698z"/>
+                            </g>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        {% endfor %} 
+    </div>
+
+    
+
+</div>
+{% endblock %}

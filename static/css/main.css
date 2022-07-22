@@ -1,4 +1,3 @@
-
 .mainGrid{
     position: absolute;
     left: 0;
@@ -6,24 +5,26 @@
     margin: 0;
     padding: 0;
     border: 0;
-    height: 100vh;
-    width: 100vw;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 2fr 8fr;
-    grid-template-areas: 
-        "header header header header header"
-        "menu   main   main   main   main" ;
-    column-gap: 0;
-    row-gap: 0;
-    justify-items: stretch;
-    justify-content: stretch; 
+    width: 100%;
+    height: 100%;
+    display: flex;
 }
 
 .header{
-    grid-area: header;
+    width: 100%; height: 10%;
     background-color: rgb(183,222,232);
     border-bottom: 5px solid rgb(56,93,138);
+    /*text*/
+    text-align: center;
+    color: rgb(33,89,104);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 1.5em;
+    text-shadow: 1px 1px black;
+}
+
+.body{
+    width: 100%; height: 90%;
 }
 
 .headerText{
@@ -35,18 +36,22 @@
     font-weight: bold;
     font-size: 1.5em;
     text-shadow: 1px 1px black;
-    
+}
+
+/* main.height + menubox.height = 100 */
+.main{
+    width: 85%; 
+    height: 100%; 
+    float: left; 
+    background-color: rgb(235,241,222);
 }
 
 .menu{
-    grid-area: menu;
+    width: 14.5%; 
+    height: 100%; 
+    float: left; 
     background-color: rgb(219,238,244);
-    border-right: 5px solid rgb(56,93,138);
-}
-
-.main{
-    grid-area: main;
-    background-color: rgb(235,241,222);
+    border-right: 0.5vw solid rgb(56,93,138);
 }
 
 .menuBox{
@@ -61,8 +66,43 @@
     color: black;
     font-family: sans-serif;
     text-align: center;
+    cursor: pointer;
 }
 
+.menuTittle{
+    top:0;
+    margin-top: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-top: 0;
+    border-bottom: 5px solid rgb(56,93,138);
+    background-color: rgb(198,217,241);
+    font-size: 1.2em;
+    color: black;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.menuLinkBox{
+    width: 99%;
+    border: 1px solid black;
+    margin-bottom: 5px;
+    background-color: rgb(198,217,241);
+    font-size: 1.0em;
+    color: black;
+    font-family: sans-serif;
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 0px;
+}
+
+a.currentPage:link {color: black; text-decoration: none;}
+a.currentPage:visited {color: black; text-decoration: none;}
+a.currentPage:hover {text-decoration: underline;}
+
+a.otherPage:link {color: rgb(160, 158, 158); text-decoration: none;}
+a.otherPage:visited {color: rgb(160, 158, 158); text-decoration: none;}
+a.otherPage:hover {text-decoration: underline;}
 
 .mainAreaGrid{
     height: 100%;
@@ -91,7 +131,7 @@
     text-align: center;
 }
 
-/* CSS for login.html */
+/* CSS for subPages */
 
 .mainTitleBox{
     /*Caja*/
@@ -110,52 +150,120 @@
     font-weight: bold;
 }
 
-.mainLoginBox{
-    background-color: rgb(219,238,244);     
-    border: 3px solid rgb(56,93,138);
-    border-radius: 20px;
-    margin: 2.5% 23% 1.5% 23%;
-    padding: 2% 5% 2% 5%;
-    text-align: center;
-}
-
-.mainInput{
-    border: 2px solid rgb(56,93,138);
-    border-radius: 4px;
-    float: left;
-    height: 1.85vw;
-}
-
-.mainLabelBox{
-    width: 29%; 
-    float: left;
-    padding-right: 1%;
-    height: 2vw;
-}
-
-.mainTextBox{
-    width: 70%; 
-    float: left;
-    padding-bottom: 2.5%;
-    height: 2vw;
-    text-align: center;
-    align-items: center;
-}
-
-.mainCheckbox{
-    width: 1vw;
-    height: 1vw;
-    border: 3px solid rgb(56,93,138);
-}
-
-.mainSubmit{
-    background-color: rgb(56,93,138);
-    border: none;
-    color: white;
-    font-size: 1vw;
-    padding: 1vw 2vw;
+.blueMessage, .greenMessage, .yellowMessage, .redMessage, .validation {
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    border: 1px solid;
+    position:fixed;
+    z-index: 1000;
+    margin-left: 40%;
+    margin-right: 30%;
+    margin-top: 2em;
     font-weight: bold;
-    margin: 0.5vw;
-    cursor: pointer;
-    border-radius: 0.5vw;
+    padding: 1em;
+    padding-left: 3em;
+    -moz-animation: fade-out 10s;
+    /* Firefox */
+    -webkit-animation: fade-out 10s;
+    /* Safari and Chrome */
+    -o-animation: fade-out 10s;
+    /* Opera */
+    animation: fade-out 10s;
+    animation-fill-mode: forwards;
+    width: 40%;
+    height: auto;
+}
+
+.blueMessage{
+    color: #00529B;
+	background-color: #BDE5F8;
+	background-image: url('../imgs/info.png');
+}
+
+.greenMessage{
+    color: #4F8A10;
+	background-color: #DFF2BF;
+	background-image: url('../imgs/success.png');
+}
+
+.yellowMessage{
+    color: #9F6000;
+	background-color: #FEEFB3;
+	background-image: url('../imgs/warning.png');
+}
+
+.redMessage{
+    color: #D8000C;
+	background-color: #FFBABA;
+	background-image: url('../imgs/error.png');
+}
+
+@keyframes fade-out {
+    0%   { 
+        opacity: 1;
+        width: auto;
+        height: auto;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    50%   { 
+        opacity: 1;
+        width: auto;
+        height: auto;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    99%  { 
+        opacity: 0.001;
+        width: auto;
+        height: auto;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    100% { opacity: 0;width: 0; height: 0; padding: 0;  visibility: hidden;}
+} 
+
+@-webkit-keyframes fade-out {
+    0%   { 
+        opacity: 1;
+        width: 10em;
+        min-height: 3em;
+        max-height: 7em;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    50%   { 
+        opacity: 1;
+        width: 10em;
+        min-height: 3em;
+        max-height: 7em;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    99%  { 
+        opacity: 0.001;
+        width: 10em;
+        min-height: 3em;
+        max-height: 7em;
+        padding: 1em;
+        padding-left: 3em;
+    }
+    100% { opacity: 0;width: 0; height: 0; padding: 0;  visibility: hidden;}
+} 
+.mainTitleBoxDark{
+    /*Caja*/
+    align-self: center;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+    margin-bottom: 0.5%;
+    background-color: #215968;
+    border: 3px solid rgb(120, 147, 180);   
+    overflow: auto;
+
+    /*Texto*/
+    font-size: 1.2em;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    font-weight: bold;
 }

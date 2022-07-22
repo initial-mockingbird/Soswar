@@ -1,0 +1,13 @@
+{% from "formMacros.html" import render_form_ %}
+
+
+
+{{render_form_('Add user',
+    [ (form.login,"field")
+    , (form.password,"field")
+    , (form.groups,"field Fsquare")
+    , (form.confirm,"field")
+    , (form.nombres,"field")
+    , (form.apellidos,"field")
+    ])}}
+

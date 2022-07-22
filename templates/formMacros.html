@@ -1,0 +1,130 @@
+{% macro render_field(field) %}
+        <fieldset style="border: 3px solid rgb(56,93,138);">
+            <legend>
+                <div style="
+                    border-radius: 5px; 
+                    background-color: white; 
+                    padding: 0.2em; 
+                    padding-left: 0.4em; 
+                    padding-right: 0.4em;
+                    "
+                >
+                {{ field.label }}
+                </div>
+            </legend>
+            {{ field(**kwargs)|safe }}
+        </fieldset>
+{% endmacro %}
+
+{% macro render_form(title,fields) %}
+
+<fieldset style="
+    background-color: rgb(183,222,232);
+    border-radius: 10px;
+    border: 3px solid rgb(56,93,138);
+    "
+>
+    
+        <div style="display: flex;align-content: center; align-items: center; width: 100%;" >
+            <div style="width: 100%;"></div>
+            <h2 class="itemBox" style="
+                font-size: 2em;
+                font-weight: bold;
+                text-align: center;
+                font-family: monospace;"
+            >
+                {{title}}
+            </h2>
+            <div style="width: 100%;"></div>
+        </div>
+
+    <form method=post>
+        {% for (field,classes) in fields %}
+            {% if field.errors %}
+                {{render_field(field,class="field error",)}}
+            {% else %}
+                {{render_field(field,class=classes)}}
+            {% endif %}
+            
+            <br/>
+        {% endfor %}
+
+        <button class="send" name="action" value="SEND">
+            <span>Enviar</span>
+        </button>
+
+    </form>  
+
+</fieldset>
+
+{% endmacro %}
+
+
+{% macro render_form_(title,fields,url,form) %}
+
+<div style="
+    position:fixed;
+    background-color:rgba(128, 128, 128, 0.70);
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    ">
+</div>
+
+<fieldset style="
+    position:fixed;
+    max-height: 60%;
+    min-width: 30%;
+    background-color: rgb(183,222,232);
+    border-radius: 10px;
+    border: 3px solid rgb(56,93,138);
+    z-index: 1000;
+    margin-left: 20%;
+    margin-top: 2em;
+    overflow-y: scroll;
+    "
+>
+    
+        <div style="display: flex;align-content: center; align-items: center; width: 100%;" >
+            <div style="width: 100%;"></div>
+            <h2 class="itemBox" style="
+                font-size: 2em;
+                font-weight: bold;
+                text-align: center;
+                font-family: monospace;"
+            >
+                {{title}}
+            </h2>
+            <div style="width: 100%;"></div>
+        </div>
+
+    <form method=post action="{{ url_for(url) }}">
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+        {% for (field,classes) in fields %}
+            {% if classes=='hideBox' %}
+                <fieldset style="display: none;">
+                    {{ field(**kwargs)|safe }}
+                </fieldset>
+            {% else %}
+                {{render_field(field,class=classes)}}
+            {% endif %}
+            <br/>
+        {% endfor %}
+
+
+        <div style="display: flex;">
+            <button class="send" name="action" value="SEND">
+                <span>Enviar</span>
+            </button>
+            <button class="send" name="action" value="EXIT">
+                <span>Exit</span>
+            </button>
+        </div>
+
+    </form>  
+
+</fieldset>
+
+
+{% endmacro %}

@@ -22,11 +22,44 @@
 
 .itemBox{
     min-width: 8em;
-    width: auto;
+    max-width: 100%;
     border: 3px solid rgb(56,93,138);
     border-radius: 5px;
     padding: 0.5em;
     background-color: white;
+    margin-left: 0.5em;
+    margin-top: 0.5em;
+}
+
+.hideBox{
+    display: none;
+}
+
+.defaultBox{
+    min-width: 11em;
+    max-width: 11em;
+    border: 3px solid rgb(56,93,138);
+    border-radius: 5px;
+    padding: 0.5em;
+    background-color: white;
+    margin-left: 0.5em;
+    margin-top: 0.5em;
+}
+
+.stringBox{
+    min-width: 10em;
+    max-width: 10em;
+    border: 3px solid rgb(56,93,138);
+    border-radius: 5px;
+    padding: 0.5em;
+    background-color: white;
+    margin-top: 0.5em; 
+    margin-left: 0.5em;
+    height: 1.5em;
+}
+
+.stringBox:focus{
+    outline: 1px solid rgb(0, 140, 255);
 }
 
 .iconBox{
@@ -52,4 +85,78 @@
     /* Scaling button to 0.98 to its original size */
     box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
 }
+
+
+.iconBoxEdit{
+    background-color: rgb(33,89,104);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+    margin-top: 0.5em;
+    margin-left: 0.5em;
+    height: 3em;
+}
+
+.disabledIconBoxEdit{
+    background-color:rgba(217, 217, 217, 0.445);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+    margin-top: 0.5em;
+    margin-left: 0.5em;
+    height: 3em;
+}
+
+
+.send {
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #3d405b;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 17px;
+    padding: 16px;
+    width: 130px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+   }
+   
+.send span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+.send span:after {
+    content: '»';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -15px;
+    transition: 0.5s;
+}
+
+.send:hover span {
+    padding-right: 15px;
+}
+
+.send:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+
+.disabled{
+    color: rgba(0,0,0,0.50);
+    background-color:rgba(217, 217, 217, 0.445);
+}
+
+
+
 

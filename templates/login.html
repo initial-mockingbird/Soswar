@@ -10,6 +10,8 @@
         Control de Acceso
     </div>
     <form action="/login" method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
         <div class="mainLoginBox">
             <div class="mainLabelBox">
                 <label for="login" style="float: right;">Login:</label>
