@@ -43,7 +43,18 @@ def data_compras( cosechaID : int ):
     filterByID = request.args.get('filterByID', None)
     compras = currentCosecha.compras 
     if (filterByID is not None) and (filterByID!=""):
-        compras = list(filter(lambda compra: str(compra.ID)==str(filterByID), compras) )
+        compras = []
+        aux = filterByID.split()
+        if filterByID == "hoy":
+            print("ACA")
+            compras = list(filter(lambda compra: compra.date==datetime.today(), compras) )    
+        elif filterByID == "ultimo mes":
+            compras = list(filter(lambda compra: compra.date >= datetime.today().replace(day=1)  , compras) )    
+        elif  len(aux) == 2:
+            (d1,d2) = list(map(lambda x: datetime.strptime(x,'%Y/%M/%d').date(),aux))
+            compras = list(filter(lambda compra: compra.date >= d1 and compra.date <= d2, compras) )    
+        else:
+            compras = list(filter(lambda compra: str(compra.ID)==str(filterByID), compras) )
     for c in compras: c.addExtraAtt()
     
     # Variables for the Form (addUser)
@@ -104,7 +115,16 @@ def data_lista_compras( cosechaID : int ):
     filterByID = request.args.get('filterByID', None)
     compras = currentCosecha.compras 
     if (filterByID is not None) and (filterByID!=""):
-        compras = list(filter(lambda compra: str(compra.ID)==str(filterByID), compras) )
+        aux = filterByID.split()
+        if filterByID == "hoy":
+            compras = list(filter(lambda compra: compra.date==datetime.today(), compras) )    
+        elif filterByID == "ultimo mes":
+            compras = list(filter(lambda compra: compra.date >= datetime.today().replace(day=1).date()  , compras) )    
+        elif  len(aux) == 2:
+            (d1,d2) = list(map(lambda x: datetime.strptime(x,'%Y/%M/%d').date(),aux))
+            compras = list(filter(lambda compra: compra.date >= d1 and compra.date <= d2, compras) )    
+        else:
+            compras = list(filter(lambda compra: str(compra.ID)==str(filterByID), compras) )
     
     sum_cantidad_total = 0
     sum_monto = 0
